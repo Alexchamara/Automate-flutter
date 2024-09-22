@@ -10,7 +10,6 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // Search bar
             Row(
               children: [
@@ -18,57 +17,65 @@ class HomePage extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Container(
-                    height: 40,
-                    child: Center(
-                      child: MaterialButton(
-                        onPressed: () {},
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Icon(Icons.location_on,
-                                  color: Color.fromRGBO(11, 25, 111, 1.0)),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Text('Location'),
-                            ),
-                          ],
-                        ),
+                    height: 50,
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 5,
+                            offset: const Offset(0, 3)),
+                      ],
+                    ),
+                    child: MaterialButton(
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.location_on,
+                              color: Theme.of(context).primaryColor),
+                          const SizedBox(width: 2),
+                          Text('Location',
+                              style: Theme.of(context).textTheme.bodyLarge),
+                        ],
                       ),
                     ),
                   ),
                 ),
 
-                // Category
+                // Category button
                 Expanded(
                   flex: 2,
                   child: Container(
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        left: BorderSide(color: Colors.grey, width: 2.0),
-                        right: BorderSide(color: Colors.grey, width: 2.0),
-                      ),
+                    height: 50,
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 5,
+                            offset: const Offset(0, 3)),
+                      ],
                     ),
-                    child: Center(
-                      child: MaterialButton(
-                        onPressed: () {},
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Icon(Icons.local_offer,
-                                  color: Color.fromRGBO(11, 25, 111, 1.0)),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Text('Category'),
-                            ),
-                          ],
-                        ),
+                    child: MaterialButton(
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.local_offer,
+                              color: Theme.of(context).primaryColor),
+                          const SizedBox(width: 2),
+                          Text('Category',
+                              style: Theme.of(context).textTheme.bodyLarge),
+                        ],
                       ),
                     ),
                   ),
@@ -78,13 +85,17 @@ class HomePage extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: Container(
-                    height: 40,
-                    child: Center(
-                      child: MaterialButton(
-                        onPressed: () {},
-                        child: const Icon(Icons.bookmark_add_outlined,
-                            color: Color.fromRGBO(11, 25, 111, 1.0)),
+                    height: 50,
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    child: MaterialButton(
+                      onPressed: () {},
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Colors.grey.withOpacity(0.5)),
                       ),
+                      child: const Icon(Icons.bookmark_add_outlined,
+                          color: Colors.red),
                     ),
                   ),
                 ),
@@ -92,72 +103,73 @@ class HomePage extends StatelessWidget {
             ),
 
             // Main image
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Stack(
               children: [
-                Stack(
-                  children: [
-                    ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.4),
-                        BlendMode.darken,
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        spreadRadius: 0,
+                        blurRadius: 10,
+                        offset: const Offset(
+                            0, 5), // changes position of shadow to bottom
                       ),
-                      child: const Image(
-                        image: AssetImage('images/mainImage.png'),
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
+                    ],
+                  ),
+                  child: ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.4),
+                      BlendMode.darken,
                     ),
-                    // Main Text
-                    const Positioned.fill(
-                      child: Center(
-                        // child: Text(
-                        //   'Find your dream car',
-                        //   style: TextStyle(
-                        //     color: Colors.white,
-                        //     fontSize: 20.0,
-                        //     fontWeight: FontWeight.bold,
-                        //   ),
-                        // ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Find your dream car',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Text(
-                                'Search for your dream car from our wide range of cars',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14.0,
-                                ),
-                                textAlign: TextAlign.center, // Aligns text to the center
-                              ),
-                            ),
-                          ],
+                    child: const Image(
+                      image: AssetImage('images/mainImage.png'),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 250, // Fixed height for better layout
+                    ),
+                  ),
+                ),
+                const Positioned.fill(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Find your dream car',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 10),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Text(
+                            'Search for your dream car from our wide range of cars',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
 
             // Text section
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
               child: Center(
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       'Popular Brands',
                       style: TextStyle(
                         color: Colors.red,
@@ -165,27 +177,26 @@ class HomePage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       'Straight to the best cars. We feature great used and new cars that tick every box.',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center, // Aligns text to the center
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
             ),
 
-            // GridView for car brand
+            // GridView for car brands
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
               child: CarBrands(),
             ),
           ],
-        )
+        ),
       ),
     );
   }
@@ -198,18 +209,17 @@ class CarBrands extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      shrinkWrap: true, // Makes GridView fit its content
-      physics: const NeverScrollableScrollPhysics(), // Disable GridView's own scrolling
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // 2 columns
-        crossAxisSpacing: 100.0, // Space between columns
-        mainAxisSpacing: 10.0, // Space between rows
-        childAspectRatio: 0.8, // Adjusts the aspect ratio of grid items
+        crossAxisCount: 2,
+        crossAxisSpacing: 20.0,
+        mainAxisSpacing: 10.0,
+        // childAspectRatio: 0.8,
       ),
-      itemCount: 6, // Total number of grid items
+      itemCount: 6,
       itemBuilder: (BuildContext context, int index) {
-        // List of local image assets and names
         List<String> carImages = [
           'images/nissan.png',
           'images/toyota.png',
@@ -232,27 +242,26 @@ class CarBrands extends StatelessWidget {
           children: [
             // Display the image
             SizedBox(
-              height: 70, // Adjust the image height
+              height: 70,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
                   carImages[index],
-                  fit: BoxFit.contain, // Ensure image fits well
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
-            // Display the car name below the image
-            const SizedBox(height: 5), // Space between image and text
+            const SizedBox(height: 5),
             Text(
               carNames[index],
-              style: const TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(fontSize: 14.0), // No need to specify color
+              textAlign: TextAlign.center,
+            )
           ],
         );
-
       },
     );
   }

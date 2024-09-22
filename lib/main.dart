@@ -14,30 +14,62 @@ class AutomateApp extends StatefulWidget {
 }
 
 class _AutomateAppState extends State<AutomateApp> {
+  // Initial theme mode set to light
   ThemeMode _themeMode = ThemeMode.light;
-  Color _titleColor = Colors.white;
-  LinearGradient titleGradient = const LinearGradient(colors:
-  [Colors.black, Colors.red],
-    tileMode: TileMode.mirror,
-  );
 
+  // Function to toggle between light and dark theme
   void _toggleTheme() {
     setState(() {
-      _themeMode =(_themeMode == ThemeMode.light) ? ThemeMode.dark : ThemeMode.light;
-      _titleColor = (_themeMode == ThemeMode.light) ?  Colors.black : Colors.white;
-      titleGradient = (_themeMode == ThemeMode.light) ? const LinearGradient(colors: [Colors.black, Colors.red], tileMode: TileMode.mirror) : const LinearGradient(colors: [Colors.red, Colors.white], tileMode: TileMode.mirror);
+      // Toggle theme mode
+      _themeMode =
+      (_themeMode == ThemeMode.light) ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Set the theme mode
       themeMode: _themeMode,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+
+      // Define light theme
+      theme: ThemeData(
+        primaryColor: const Color(0xFFFF3B3F), // Bright red
+        scaffoldBackgroundColor: const Color(0xFFF9F9F9), // Light background
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFFF3B3F), // Red AppBar in light mode
+          titleTextStyle: TextStyle(color: Colors.black, fontSize: 20), // Title black in light mode
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.black), // Black text in light mode
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFFFF3B3F), // Red FAB in light mode
+        ),
+      ),
+
+      // Define dark theme
+      darkTheme: ThemeData(
+        primaryColor: const Color(0xFFFF3B3F), // Same red in dark mode
+        scaffoldBackgroundColor: const Color(0xFF121212), // Dark background
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFD32F2F), // Slightly darker red for dark mode
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // Title white in dark mode
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.white), // White text in dark mode
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFFFF3B3F), // Red FAB in dark mode
+        ),
+      ),
+
+      // Initial route of the application
       initialRoute: MainLayoyt.id,
+
+      // Define routes
       routes: {
-        MainLayoyt.id: (context) => MainLayoyt(toggleTheme: _toggleTheme, titleColor: _titleColor, titleGradient: titleGradient),
+        MainLayoyt.id: (context) => MainLayoyt(toggleTheme: _toggleTheme),
       },
     );
   }

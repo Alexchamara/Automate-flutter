@@ -1,4 +1,5 @@
 // lib/layout.dart
+import 'package:automate/screens/account.dart';
 import 'package:automate/screens/home.dart';
 import 'package:automate/screens/test.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,8 @@ import 'package:flutter/material.dart';
 class MainLayoyt extends StatefulWidget {
   static final String id = 'MainLayoyt';
   final VoidCallback toggleTheme;
-  final Color titleColor;
-  final LinearGradient titleGradient;
 
-  const MainLayoyt({super.key, required this.toggleTheme, required this.titleColor, required this.titleGradient});
+  const MainLayoyt({super.key, required this.toggleTheme});
 
   @override
   _MainLayoytState createState() => _MainLayoytState();
@@ -22,7 +21,7 @@ class _MainLayoytState extends State<MainLayoyt> {
     const HomePage(),
     const TestPage(),
     const Center(child: Text('Chat Page')),
-    const Center(child: Text('Account Page')),
+    const AccountPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,16 +34,22 @@ class _MainLayoytState extends State<MainLayoyt> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+
+        // App bar
         appBar: AppBar(
           elevation: 10.0,
-          // backgroundColor: Color.fromRGBO(11, 25, 111, 0.5),
-          title: AppBarTitle(color: widget.titleColor, titleGradient: widget.titleGradient),
+          title: const Text(
+            'Automate',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Theme.of(context).primaryColor, // Red background
           actions: [
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
               child: IconButton(
-                icon: Icon(Icons.dark_mode_sharp),
+                icon: const Icon(Icons.dark_mode_sharp),
                 onPressed: widget.toggleTheme,
+                color: Colors.white, // Icon color
               ),
             ),
           ],
@@ -52,26 +57,28 @@ class _MainLayoytState extends State<MainLayoyt> {
         body: SafeArea(
           child: _pages[_selectedIndex],
         ),
+
+        //Create Ad btn
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             // Action for the Post button
           },
-          child: const Icon(Icons.add),
-          backgroundColor: Colors.amber,
+          backgroundColor: Theme.of(context).primaryColor, // Red FAB
           elevation: 6.0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50.0),
-              side: BorderSide(color: Colors.white)),
+              side: const BorderSide(color: Colors.white)),
+          child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+        // Bottom navigation bar
         bottomNavigationBar: BottomAppBar(
           shape: const CircularNotchedRectangle(),
           notchMargin: 6.0,
           child: SizedBox(
             height: 56.0,
             child: BottomNavigationBar(
-              selectedIconTheme: IconThemeData(color:Color.fromRGBO(11, 25, 111, 1.0)),
-              selectedItemColor: Color.fromRGBO(11, 25, 111, 1.0),
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
               items: const [
@@ -93,29 +100,13 @@ class _MainLayoytState extends State<MainLayoyt> {
                 ),
               ],
               type: BottomNavigationBarType.fixed,
+              selectedItemColor: Theme.of(context).primaryColor, // Red for selected item
+              unselectedItemColor: Colors.grey, // Gray for unselected items
               selectedFontSize: 12,
               unselectedFontSize: 12,
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class AppBarTitle extends StatelessWidget {
-  final Color color;
-  final LinearGradient titleGradient;
-
-  const AppBarTitle({super.key, required this.color, required this.titleGradient});
-
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (bounds) => titleGradient.createShader(bounds),
-      child: Text(
-        'Automate',
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
