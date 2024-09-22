@@ -1,4 +1,5 @@
 // lib/main.dart
+import 'package:automate/screens/Register.dart';
 import 'package:flutter/material.dart';
 import 'layout.dart';
 
@@ -70,6 +71,7 @@ class _AutomateAppState extends State<AutomateApp> {
       // Define routes
       routes: {
         MainLayoyt.id: (context) => MainLayoyt(toggleTheme: _toggleTheme),
+        RegisterPage.id: (context) => RegisterPage(),
       },
     );
   }

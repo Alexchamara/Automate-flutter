@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'Register.dart';
+
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
 
@@ -37,13 +39,13 @@ class AccountPage extends StatelessWidget {
                 ),
               ),
 
-
               Column(
                 children: [
                   //Login button
                   Container(
                     width: 290,
-                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10.0),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(3),
@@ -51,24 +53,24 @@ class AccountPage extends StatelessWidget {
                         BoxShadow(
                             color: Colors.grey.withOpacity(0.3),
                             blurRadius: 5,
-                            offset: const Offset(0, 5)
-                        ),
+                            offset: const Offset(0, 5)),
                       ],
                     ),
                     child: MaterialButton(
                       height: false ? 50 : 50,
-                      onPressed: (){},
+                      onPressed: () {},
                       child: Text(
                         'Log in',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
                       ),
                     ),
                   ),
                   Container(
                     width: 290,
-                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10.0),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(3),
@@ -76,18 +78,43 @@ class AccountPage extends StatelessWidget {
                         BoxShadow(
                             color: Colors.grey.withOpacity(0.3),
                             blurRadius: 5,
-                            offset: const Offset(0, 5)
-                        ),
+                            offset: const Offset(0, 5)),
                       ],
                     ),
                     child: MaterialButton(
                       height: false ? 50 : 50,
-                      onPressed: (){},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    const RegisterPage(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset(0.0, 0.0);
+                              const curve = Curves.easeOutQuint;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var slideAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: slideAnimation,
+                                child: child,
+                              );
+                            },
+                            transitionDuration: const Duration(
+                                seconds: 1), // Slow-motion effect
+                          ),
+                        );
+                      },
                       child: Text(
                         'Register',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
                       ),
                     ),
                   ),
