@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../layout.dart';
+import 'Register.dart';
 import 'account.dart';
-import 'login.dart';
 
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
-  static final String id = 'RegisterPage';
+  static final String id = 'LoginPage';
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +39,12 @@ class RegisterPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10.0),
-                      Text('Register to manage your account',
+                      Text('Log in to manage your account',
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
                               ?.copyWith(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold)),
+                              fontSize: 14.0, fontWeight: FontWeight.bold)),
 
                       // Form
                       Container(
@@ -53,27 +53,6 @@ class RegisterPage extends StatelessWidget {
                             vertical: 30.0, horizontal: 20.0),
                         child: Column(
                           children: [
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Full Name',
-                                hintText: 'Enter your full name',
-                                hintStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 14.0),
-                                labelStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 14.0),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10.0),
                             TextFormField(
                               decoration: InputDecoration(
                                 labelText: 'Email',
@@ -100,11 +79,6 @@ class RegisterPage extends StatelessWidget {
                               hintText: 'Enter your password',
                             ),
                             const SizedBox(height: 10.0),
-                            const PasswordField(
-                              labelText: 'Confirm Password',
-                              hintText: 'Confirm your password',
-                            ),
-
                             //Register btn
                             const SizedBox(height: 10.0),
                             MaterialButton(
@@ -113,14 +87,14 @@ class RegisterPage extends StatelessWidget {
                               onPressed: () {},
                               color: Theme.of(context).primaryColor,
                               child: Text(
-                                'Register',
+                                'Log in',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
                                     ?.copyWith(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                    ),
+                                  color: Theme.of(context)
+                                      .scaffoldBackgroundColor,
+                                ),
                               ),
                             ),
 
@@ -129,66 +103,22 @@ class RegisterPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('Don\'t have an account?',
+                                Text('I have an account',
                                     style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
+                                    .textTheme
+                                    .bodyLarge
                                         ?.copyWith(fontSize: 14.0)
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, LoginPage.id);
+                                    Navigator.pushNamed(context, RegisterPage.id);
                                   },
-                                  child: Text('Register',
+                                  child: Text('Log in',
                                       style: TextStyle(color: Theme.of(context).primaryColor)
                                   ),
                                 ),
                               ],
                             ),
-                            //Back btn
-                            // MaterialButton(
-                            //   height: 50,
-                            //   minWidth: MediaQuery.of(context).size.width,
-                            //   onPressed: () {
-                            //     Navigator.push(
-                            //       context,
-                            //       PageRouteBuilder(
-                            //         pageBuilder: (context, animation,
-                            //                 secondaryAnimation) =>
-                            //             const AccountPage(),
-                            //         transitionsBuilder: (context, animation,
-                            //             secondaryAnimation, child) {
-                            //           const begin = Offset(1.0, 0.0);
-                            //           const end = Offset(0.0, 0.0);
-                            //           const curve = Curves.easeOutQuint;
-                            //
-                            //           var tween = Tween(begin: begin, end: end)
-                            //               .chain(CurveTween(curve: curve));
-                            //           var slideAnimation =
-                            //               animation.drive(tween);
-                            //
-                            //           return SlideTransition(
-                            //             position: slideAnimation,
-                            //             child: child,
-                            //           );
-                            //         },
-                            //         transitionDuration: const Duration(
-                            //             seconds: 1), // Slow-motion effect
-                            //       ),
-                            //     );
-                            //   },
-                            //   color: Theme.of(context).primaryColor,
-                            //   child: Text(
-                            //     'Back',
-                            //     style: Theme.of(context)
-                            //         .textTheme
-                            //         .bodyLarge
-                            //         ?.copyWith(
-                            //           color: Theme.of(context)
-                            //               .scaffoldBackgroundColor,
-                            //         ),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),

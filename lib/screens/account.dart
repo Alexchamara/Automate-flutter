@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Register.dart';
+import 'login.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -58,7 +59,33 @@ class AccountPage extends StatelessWidget {
                     ),
                     child: MaterialButton(
                       height: false ? 50 : 50,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                            const LoginPage(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset(0.0, 0.0);
+                              const curve = Curves.easeOutQuint;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var slideAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: slideAnimation,
+                                child: child,
+                              );
+                            },
+                            transitionDuration: const Duration(
+                                seconds: 1), // Slow-motion effect
+                          ),
+                        );
+                      },
                       child: Text(
                         'Log in',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
