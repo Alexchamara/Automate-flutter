@@ -1,5 +1,6 @@
 // lib/layout.dart
 import 'package:automate/screens/home.dart';
+import 'package:automate/screens/test.dart';
 import 'package:flutter/material.dart';
 
 class MainLayoyt extends StatefulWidget {
@@ -18,8 +19,8 @@ class _MainLayoytState extends State<MainLayoyt> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(),
-    const Center(child: Text('Search Page')),
+    const HomePage(),
+    const TestPage(),
     const Center(child: Text('Chat Page')),
     const Center(child: Text('Account Page')),
   ];
@@ -32,65 +33,69 @@ class _MainLayoytState extends State<MainLayoyt> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: AppBarTitle(color: widget.titleColor, titleGradient: widget.titleGradient),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
-            child: IconButton(
-              icon: Icon(Icons.brightness_6),
-              onPressed: widget.toggleTheme,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 10.0,
+          // backgroundColor: Color.fromRGBO(11, 25, 111, 0.5),
+          title: AppBarTitle(color: widget.titleColor, titleGradient: widget.titleGradient),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
+              child: IconButton(
+                icon: Icon(Icons.dark_mode_sharp),
+                onPressed: widget.toggleTheme,
+              ),
             ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: _pages[_selectedIndex],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Action for the Post button
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: Colors.amber,
-        elevation: 6.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.0),
-            side: BorderSide(color: Colors.white)),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 6.0,
-        child: SizedBox(
-          height: 56.0,
-          child: BottomNavigationBar(
-            selectedIconTheme: IconThemeData(color: Colors.red),
-            selectedItemColor: Colors.red,
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home, size: 24),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search, size: 24),
-                label: 'Search',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.chat, size: 24),
-                label: 'Chat',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle, size: 24),
-                label: 'Account',
-              ),
-            ],
-            type: BottomNavigationBarType.fixed,
-            selectedFontSize: 12,
-            unselectedFontSize: 12,
+          ],
+        ),
+        body: SafeArea(
+          child: _pages[_selectedIndex],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Action for the Post button
+          },
+          child: const Icon(Icons.add),
+          backgroundColor: Colors.amber,
+          elevation: 6.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              side: BorderSide(color: Colors.white)),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          shape: const CircularNotchedRectangle(),
+          notchMargin: 6.0,
+          child: SizedBox(
+            height: 56.0,
+            child: BottomNavigationBar(
+              selectedIconTheme: IconThemeData(color:Color.fromRGBO(11, 25, 111, 1.0)),
+              selectedItemColor: Color.fromRGBO(11, 25, 111, 1.0),
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home, size: 24),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search, size: 24),
+                  label: 'Search',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.chat, size: 24),
+                  label: 'Chat',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle, size: 24),
+                  label: 'Account',
+                ),
+              ],
+              type: BottomNavigationBarType.fixed,
+              selectedFontSize: 12,
+              unselectedFontSize: 12,
+            ),
           ),
         ),
       ),

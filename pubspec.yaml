@@ -64,6 +64,12 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - images/mainImage.png
+    - images/bmw.png
+    - images/honda.png
+    - images/mercedes-benz.png
+    - images/toyota.png
+    - images/nissan.png
+    - images/suzuki.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
