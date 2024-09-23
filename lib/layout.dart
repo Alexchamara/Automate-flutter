@@ -1,6 +1,7 @@
 // lib/layout.dart
 import 'package:automate/screens/account.dart';
 import 'package:automate/screens/home.dart';
+import 'package:automate/screens/search.dart';
 import 'package:automate/screens/test.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class _MainLayoytState extends State<MainLayoyt> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const TestPage(),
+    const SearchPage(),
     const Center(child: Text('Chat Page')),
     const AccountPage(),
   ];

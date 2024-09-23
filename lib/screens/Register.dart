@@ -107,20 +107,32 @@ class RegisterPage extends StatelessWidget {
 
                             //Register btn
                             const SizedBox(height: 10.0),
-                            MaterialButton(
-                              height: 50,
-                              minWidth: MediaQuery.of(context).size.width,
-                              onPressed: () {},
-                              color: Theme.of(context).primaryColor,
-                              child: Text(
-                                'Register',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                    ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(3),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 5)),
+                                ],
+                              ),
+                              child: MaterialButton(
+                                height: 50,
+                                minWidth: MediaQuery.of(context).size.width,
+                                onPressed: () {},
+                                color: Theme.of(context).primaryColor,
+                                child: Text(
+                                  'Register',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                      ),
+                                ),
                               ),
                             ),
 

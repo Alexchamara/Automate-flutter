@@ -37,10 +37,15 @@ class HomePage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.location_on,
-                              color: Theme.of(context).primaryColor),
+                              color: Theme.of(context).
+                              primaryColor
+                          ),
                           const SizedBox(width: 2),
                           Text('Location',
-                              style: Theme.of(context).textTheme.bodyLarge),
+                              style: Theme.of(context).
+                              textTheme.
+                              bodyLarge
+                          ),
                         ],
                       ),
                     ),
