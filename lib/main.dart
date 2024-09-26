@@ -32,62 +32,85 @@ class _AutomateAppState extends State<AutomateApp> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedTheme(
-      duration: const Duration(milliseconds: 500), // Smooth transition duration
-      data: _themeMode == ThemeMode.light ? _lightTheme : _darkTheme,
-      child: MaterialApp(
-        // Set the theme mode
-        themeMode: _themeMode,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AnimatedTheme(
+        duration: const Duration(milliseconds: 500), // Smooth transition duration
+        data: _themeMode == ThemeMode.light ? _lightTheme : _darkTheme,
+        child: MaterialApp(
+          // Set the theme mode
+          themeMode: _themeMode,
 
-        // Define light theme
-        theme: _lightTheme,
+          // Define light theme
+          theme: _lightTheme,
 
-        // Define dark theme
-        darkTheme: _darkTheme,
+          // Define dark theme
+          darkTheme: _darkTheme,
 
-        // Initial route of the application
-        initialRoute: Layout.id,
+          // Initial route of the application
+          initialRoute: Layout.id,
 
-        // Define routes
-        routes: {
-          Layout.id: (context) => Layout(toggleTheme: _toggleTheme),
-          RegisterPage.id: (context) => const RegisterPage(),
-          LoginPage.id: (context) => const LoginPage(),
-          ProductDetailPage.id: (context) => const ProductDetailPage(),
-          SearchPage.id: (context) => const SearchPage(),
-        },
+          // Define routes
+          routes: {
+            Layout.id: (context) => Layout(toggleTheme: _toggleTheme),
+            RegisterPage.id: (context) => const RegisterPage(),
+            LoginPage.id: (context) => const LoginPage(),
+            ProductDetailPage.id: (context) => const ProductDetailPage(),
+            SearchPage.id: (context) => const SearchPage(),
+          },
+        ),
       ),
     );
   }
 
+  // Light theme
   final ThemeData _lightTheme = ThemeData(
+  // Bright red primary color
+    primaryColor: const Color(0xFFFF3B3F),
 
-    primaryColor: const Color(0xFFFF3B3F), // Bright red
-    scaffoldBackgroundColor: const Color(0xFFF9F9F9), // Light background
+    // Light background
+    scaffoldBackgroundColor: const Color(0xFFF9F9F9),
+
+    // Red AppBar in light mode
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFFF3B3F), // Red AppBar in light mode
-      titleTextStyle: TextStyle(color: Colors.black, fontSize: 20), // Title black in light mode
+      backgroundColor: Color(0xFFFF3B3F),
+      titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
     ),
+
+    // Black text in light mode
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.black), // Black text in light mode
+      bodyLarge: TextStyle(color: Colors.black),
     ),
+
+    // Red FAB in light mode
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFFFF3B3F), // Red FAB in light mode
+      backgroundColor: Color(0xFFFF3B3F),
     ),
   );
 
+
+  // Dark theme
   final ThemeData _darkTheme = ThemeData(
-    primaryColor: const Color(0xFFFF3B3F), // Same red in dark mode
-    scaffoldBackgroundColor: const Color(0xFF1C1C1C), // Dark background 121212
+    // Same red in dark mode
+    primaryColor: const Color(0xFFFF3B3F),
+
+    // Dark background 121212
+    scaffoldBackgroundColor: const Color(0xFF1C1C1C),
+
+    // Dark red AppBar in dark mode
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFD32F2F), // Slightly darker red for dark mode
-      titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // Title white in dark mode
+      backgroundColor: Color(0xFFD32F2F),
+      titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
     ),
+
+    // White text in dark mode
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.white), // White text in dark mode
+      bodyLarge: TextStyle(color: Colors.white),
     ),
+
+    // Red FAB in dark mode
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFFFF3B3F), // Red FAB in dark mode
+      backgroundColor: Color(0xFFFF3B3F),
     ),
   );
 }
