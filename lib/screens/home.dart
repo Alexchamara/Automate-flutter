@@ -625,6 +625,7 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
   }
 }
 
+
 // Text section
 class TextSection extends StatelessWidget {
   final String sectionTitle;
@@ -799,7 +800,6 @@ class InfoSection extends StatelessWidget {
             child: MaterialButton(
               height: 50,
               onPressed: () {
-                Navigator.pushNamed(context, SearchPage.id);
               },
               child: Text(
                 'Start selling',

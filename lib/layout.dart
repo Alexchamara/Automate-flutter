@@ -13,10 +13,10 @@ class Layout extends StatefulWidget {
   @override
   State<Layout> createState() => _LayoutState();
 }
-
 class _LayoutState extends State<Layout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
+  final PageController _pageController = PageController();
 
   final List<Widget> _pages = [
     const HomePage(),
@@ -28,62 +28,74 @@ class _LayoutState extends State<Layout> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose(); // Don't forget to dispose the controller
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (context, orientation) {
-        // Check if the orientation is portrait
         if (orientation == Orientation.portrait) {
           // If the orientation is portrait
           return Scaffold(
-            key: _scaffoldKey, // Use the key here
+            key: _scaffoldKey,
             appBar: AppBar(
               elevation: 10.0,
               title: const Text(
                 'Automate',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               backgroundColor: Theme.of(context).primaryColor,
-
-              //Toggle dark mode
               actions: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
                   child: IconButton(
                     icon: const Icon(Icons.dark_mode_sharp),
                     onPressed: widget.toggleTheme,
-                    color: Colors.white, // Icon color
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
 
-            //Body
-            body: SafeArea(
-              child: _pages[_selectedIndex],
+            // Body with PageView
+            body: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              children: _pages,
             ),
 
-            // Create Ads  button
+            // FloatingActionButton
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                // Action for the FAB button (e.g., Create Ad)
+                // Action for FAB
               },
               backgroundColor: Theme.of(context).primaryColor,
               elevation: 6.0,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50.0),
-                  side: const BorderSide(color: Colors.white)),
+                borderRadius: BorderRadius.circular(50.0),
+                side: const BorderSide(color: Colors.white),
+              ),
               child: const Icon(Icons.add),
             ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-
-            // Bottom navigation bar
+            // BottomNavigationBar
             bottomNavigationBar: BottomAppBar(
               shape: const CircularNotchedRectangle(),
               notchMargin: 6.0,
@@ -93,25 +105,18 @@ class _LayoutState extends State<Layout> {
                   currentIndex: _selectedIndex,
                   onTap: _onItemTapped,
                   items: const [
-                    // Home
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home, size: 24),
                       label: 'Home',
                     ),
-
-                    // Search
                     BottomNavigationBarItem(
                       icon: Icon(Icons.search, size: 24),
                       label: 'Search',
                     ),
-
-                    // Chat
                     BottomNavigationBarItem(
                       icon: Icon(Icons.chat, size: 24),
                       label: 'Chat',
                     ),
-
-                    // Account
                     BottomNavigationBarItem(
                       icon: Icon(Icons.account_circle, size: 24),
                       label: 'Account',
@@ -126,11 +131,13 @@ class _LayoutState extends State<Layout> {
               ),
             ),
           );
+
         } else {
+
           // If the orientation is landscape
           return SafeArea(
             child: Scaffold(
-              key: _scaffoldKey, // Use the key here
+              key: _scaffoldKey,
               appBar: AppBar(
                 elevation: 10.0,
                 title: const Text(
@@ -138,7 +145,6 @@ class _LayoutState extends State<Layout> {
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-
                 backgroundColor: Theme.of(context).primaryColor,
 
                 // Leading icon
@@ -153,13 +159,11 @@ class _LayoutState extends State<Layout> {
               drawer: Drawer(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 child: SingleChildScrollView(
-                  // physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
                       // Drawer header
                       SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.2, // 20% of screen height
+                        height: MediaQuery.of(context).size.height * 0.2,
                         child: DrawerHeader(
                           decoration: const BoxDecoration(
                             color: Color(0xFFFF3B3F),
@@ -182,13 +186,12 @@ class _LayoutState extends State<Layout> {
                                 ),
                               ),
                               const Spacer(),
-                              // Dark mode toggle
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: IconButton(
                                   icon: const Icon(Icons.dark_mode_sharp),
                                   onPressed: widget.toggleTheme,
-                                  color: Colors.white, // Icon color
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -196,7 +199,7 @@ class _LayoutState extends State<Layout> {
                         ),
                       ),
 
-                      // Home
+                      // Drawer items
                       ListTile(
                         leading: Icon(
                           Icons.home,
@@ -296,7 +299,13 @@ class _LayoutState extends State<Layout> {
               ),
 
               body: SafeArea(
-                child: _pages[_selectedIndex],
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                  child: _pages[_selectedIndex],
+                ),
               ),
             ),
           );

@@ -9,6 +9,26 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (orientation == Orientation.portrait) {
+          return const SearchPagePortrait();
+        } else {
+          return SearchPageLandscape(
+            height: MediaQuery.of(context).size.width * 0.35,
+          );
+        }
+      },
+    );
+  }
+}
+
+// SearchPagePortrait
+class SearchPagePortrait extends StatelessWidget {
+  const SearchPagePortrait({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return const Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -18,7 +38,7 @@ class SearchPage extends StatelessWidget {
             ProductSearchBar(),
 
             //Product slider
-            ImageSlider(),
+            ImageSlider(height: 280.0, fitSize: StackFit.loose),
 
             //Product 01
             ProductCard(
@@ -52,6 +72,17 @@ class SearchPage extends StatelessWidget {
               carMileage: '20,000 km',
               carFuelType: 'Petrol',
             ),
+
+            //Product 04
+            ProductCard(
+              carImage: 'images/cars/benz.jpg',
+              carTitle: 'Mercedes-Benz A Class',
+              carPrice: 'Rs. 26,000,000',
+              carLocation: 'Colombo',
+              carCondition: 'Used',
+              carMileage: '87,000 km',
+              carFuelType: 'Petrol',
+            ),
           ],
         ),
       ),
@@ -59,22 +90,97 @@ class SearchPage extends StatelessWidget {
   }
 }
 
+// SearchPageLandscape
+class SearchPageLandscape extends StatelessWidget {
+  final double height;
+
+  const SearchPageLandscape({super.key, required this.height});
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+
+          //Product slider
+          ImageSlider(height: height, fitSize: StackFit.expand),
+
+          // Search Bar
+          const ProductSearchBar(),
+
+          // Product Grid
+          GridView.count(
+            shrinkWrap: true,
+            crossAxisCount: 2,
+            childAspectRatio: 1.5,
+            physics: const NeverScrollableScrollPhysics(),
+            children: const [
+              ProductCard(
+                carImage: 'images/cars/audi.jpeg',
+                carTitle: 'Audi A4 2020',
+                carPrice: 'Rs. 2,500,000',
+                carLocation: 'Colombo',
+                carCondition: 'Used',
+                carMileage: '10,000 km',
+                carFuelType: 'Petrol',
+              ),
+              ProductCard(
+                carImage: 'images/cars/bmw.jpg',
+                carTitle: 'BMW 320i 2019',
+                carPrice: 'Rs. 2,200,000',
+                carLocation: 'Colombo',
+                carCondition: 'Used',
+                carMileage: '15,000 km',
+                carFuelType: 'Petrol',
+              ),
+              ProductCard(
+                carImage: 'images/cars/corolla.jpg',
+                carTitle: 'Toyota Corolla 2019',
+                carPrice: 'Rs. 1,795,000',
+                carLocation: 'Colombo',
+                carCondition: 'Used',
+                carMileage: '20,000 km',
+                carFuelType: 'Petrol',
+              ),
+              ProductCard(
+                carImage: 'images/cars/benz.jpg',
+                carTitle: 'Mercedes-Benz A Class',
+                carPrice: 'Rs. 26,000,000',
+                carLocation: 'Colombo',
+                carCondition: 'Used',
+                carMileage: '87,000 km',
+                carFuelType: 'Petrol',
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+}
+
 // Prefetch image slider
 class ImageSlider extends StatefulWidget {
-  const ImageSlider({super.key});
+  final double height;
+  final StackFit fitSize;
+
+  const ImageSlider({super.key, required this.height, required this.fitSize});
 
   @override
   State<ImageSlider> createState() => _ImageSliderState();
 }
 
 class _ImageSliderState extends State<ImageSlider> {
-  // Image list
+  // Image list and details
   List<Map<String, String>> imageList = [
     {
       "id": "1",
       "image_path": "images/cars/A6.jpg",
       "title": "Toyota Premio G Superior 2016",
-      "price": "Rs. 15,450,00"
+      "price": "Rs. 15,450,000"
     },
     {
       "id": "2",
@@ -97,92 +203,98 @@ class _ImageSliderState extends State<ImageSlider> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Stack(
-          children: [
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ProductDetailPage()),
-                );
-              },
-              child: CarouselSlider.builder(
-                itemCount: imageList.length,
-                options: CarouselOptions(
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  viewportFraction: 1,
-                  aspectRatio: 1.5,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                ),
-
-                // Image slider
-                itemBuilder: (context, index, realIndex) {
-                  final image = imageList[index];
-
-                  // Image with gradient overlay
-                  return Stack(
-                    children: [
-                      ShaderMask(
-                        shaderCallback: (rect) {
-                          return LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.6),
-                              Colors.transparent
-                            ],
-                          ).createShader(rect);
-                        },
-                        blendMode: BlendMode.darken,
-                        child: Image.asset(
-                          image['image_path'] ?? '',
-                          fit: BoxFit.cover,
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                        ),
-                      ),
-
-                      // Image title and price
-                      Positioned(
-                        top: 140,
-                        child: Container(
-                          // color: Colors.black54,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                image['title'] ?? '',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                image['price'] ?? '',
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+        SizedBox(
+          height: widget.height,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            fit: widget.fitSize,
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProductDetailPage()),
                   );
                 },
+                child: CarouselSlider.builder(
+                  itemCount: imageList.length,
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    viewportFraction: 1,
+                    aspectRatio: 1.5,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
+
+                  // Image slider
+                  itemBuilder: (context, index, realIndex) {
+                    final image = imageList[index];
+
+                    // Image with gradient overlay
+                    return Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        ShaderMask(
+                          shaderCallback: (rect) {
+                            return LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.6),
+                                Colors.transparent
+                              ],
+                            ).createShader(rect);
+                          },
+                          blendMode: BlendMode.darken,
+                          child: Image.asset(
+                            image['image_path'] ?? '',
+                            fit: BoxFit.cover,
+                            width: MediaQuery.of(context).size.width,
+                            height: 200,
+                          ),
+                        ),
+
+                        // Image title and price
+                        Positioned(
+                          bottom: 30,
+                          child: Container(
+                            // color: Colors.black54,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  image['title'] ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  image['price'] ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -305,13 +417,13 @@ class ProductCard extends StatelessWidget {
 
   const ProductCard(
       {super.key,
-      this.carImage,
-      this.carFuelType,
-      this.carTitle,
-      this.carPrice,
-      this.carLocation,
-      this.carCondition,
-      this.carMileage});
+        this.carImage,
+        this.carFuelType,
+        this.carTitle,
+        this.carPrice,
+        this.carLocation,
+        this.carCondition,
+        this.carMileage});
 
   @override
   Widget build(BuildContext context) {
@@ -327,11 +439,13 @@ class ProductCard extends StatelessWidget {
         child: Card(
           color: Theme.of(context).scaffoldBackgroundColor,
           elevation: 5.0,
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 300,
+            // height: 300,
             child: Column(
               children: [
+
+                // Car Image
                 Center(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
@@ -349,16 +463,17 @@ class ProductCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     // Title
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 5.0, horizontal: 10.0),
                       child: Text(carTitle,
                           style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18.0,
-                                  )),
+                          Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18.0,
+                          )),
                     ),
 
                     // Price
