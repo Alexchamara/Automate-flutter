@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../layout.dart';
-import 'account.dart';
 import 'login.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -27,7 +26,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 10.0),
                       MaterialButton(onPressed: (){
-                        Navigator.pushNamed(context, MainLayoyt.id);
+                        // Navigator.pushNamed(context, MainLayoyt.id);
                       },
                         child: Text(
                           'Automate',
@@ -50,7 +49,8 @@ class RegisterPage extends StatelessWidget {
                       Container(
                         // color: Colors.red[100],
                         padding: const EdgeInsets.symmetric(
-                            vertical: 30.0, horizontal: 20.0),
+                            vertical: 30.0, horizontal: 20.0
+                        ),
                         child: Column(
                           children: [
                             TextFormField(

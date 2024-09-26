@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../layout.dart';
 import 'Register.dart';
-import 'account.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -27,7 +26,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 10.0),
                       MaterialButton(onPressed: (){
-                        Navigator.pushNamed(context, MainLayoyt.id);
+                        // Navigator.pushNamed(context, MainLayoyt.id);
                       },
                         child: Text(
                           'Automate',

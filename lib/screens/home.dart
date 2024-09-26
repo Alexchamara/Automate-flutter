@@ -1,3 +1,4 @@
+import 'package:automate/screens/search.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,104 +11,6 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar
-            Row(
-              children: [
-                // Location
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: 50,
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            blurRadius: 5,
-                            offset: const Offset(0, 3)),
-                      ],
-                    ),
-                    child: MaterialButton(
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.location_on,
-                              color: Theme.of(context).
-                              primaryColor
-                          ),
-                          const SizedBox(width: 2),
-                          Text('Location',
-                              style: Theme.of(context).
-                              textTheme.
-                              bodyLarge
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Category button
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: 50,
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            blurRadius: 5,
-                            offset: const Offset(0, 3)),
-                      ],
-                    ),
-                    child: MaterialButton(
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.local_offer,
-                              color: Theme.of(context).primaryColor),
-                          const SizedBox(width: 2),
-                          Text('Category',
-                              style: Theme.of(context).textTheme.bodyLarge),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Saved Ads
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    height: 50,
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                    child: MaterialButton(
-                      onPressed: () {},
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Colors.grey.withOpacity(0.5)),
-                      ),
-                      child: const Icon(Icons.bookmark_add_outlined,
-                          color: Colors.red),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // Main image
             Stack(
               children: [
                 Container(
@@ -128,7 +31,7 @@ class HomePage extends StatelessWidget {
                       BlendMode.darken,
                     ),
                     child: const Image(
-                      image: AssetImage('images/mainImage.png'),
+                      image: AssetImage('images/mainImg.jpg'),
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: 250, // Fixed height for better layout

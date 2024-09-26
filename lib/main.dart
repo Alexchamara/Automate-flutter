@@ -1,8 +1,11 @@
 import 'package:automate/screens/product_detail.dart';
+import 'package:automate/screens/search.dart';
 import 'package:flutter/material.dart';
 import 'package:automate/screens/Register.dart';
 import 'package:automate/screens/login.dart';
+
 import 'layout.dart';
+
 
 void main() {
   runApp(const AutomateApp());
@@ -43,20 +46,22 @@ class _AutomateAppState extends State<AutomateApp> {
         darkTheme: _darkTheme,
 
         // Initial route of the application
-        initialRoute: MainLayoyt.id,
+        initialRoute: Layout.id,
 
         // Define routes
         routes: {
-          MainLayoyt.id: (context) => MainLayoyt(toggleTheme: _toggleTheme),
-          RegisterPage.id: (context) => RegisterPage(),
-          LoginPage.id: (context) => LoginPage(),
-          ProductDetailPage.id: (context) => ProductDetailPage(),
+          Layout.id: (context) => Layout(toggleTheme: _toggleTheme),
+          RegisterPage.id: (context) => const RegisterPage(),
+          LoginPage.id: (context) => const LoginPage(),
+          ProductDetailPage.id: (context) => const ProductDetailPage(),
+          SearchPage.id: (context) => const SearchPage(),
         },
       ),
     );
   }
 
   final ThemeData _lightTheme = ThemeData(
+
     primaryColor: const Color(0xFFFF3B3F), // Bright red
     scaffoldBackgroundColor: const Color(0xFFF9F9F9), // Light background
     appBarTheme: const AppBarTheme(
