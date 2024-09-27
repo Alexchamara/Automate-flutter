@@ -24,7 +24,6 @@ class SearchPage extends StatelessWidget {
   }
 }
 
-
 // SearchPagePortrait
 class SearchPagePortrait extends StatelessWidget {
   const SearchPagePortrait({super.key});
@@ -116,7 +115,7 @@ Widget build(BuildContext context) {
           GridView.count(
             shrinkWrap: true,
             crossAxisCount: 2,
-            childAspectRatio: 1.1,
+            childAspectRatio: 1.15,
             physics: const NeverScrollableScrollPhysics(),
             children: const [
               ProductCard(
@@ -433,7 +432,7 @@ class ProductCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProductDetailPage()),
+          MaterialPageRoute(builder: (context) => const ProductDetailPage()),
         );
       },
       child: Container(
@@ -516,9 +515,9 @@ class ProductCard extends StatelessWidget {
                                     color: Colors.grey,
                                   )),
                               const SizedBox(width: 30),
-                              Container(
-                                  child: const Icon(Icons.location_on,
-                                      color: Colors.grey)),
+
+                              const Icon(Icons.location_on,
+                                  color: Colors.grey),
                               Text(carLocation,
                                   style: const TextStyle(
                                     fontSize: 14.0,

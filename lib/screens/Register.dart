@@ -19,7 +19,9 @@ class RegisterPage extends StatelessWidget {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,
-                onPressed: () => Navigator.pop(context),
+                onPressed: (){
+                  Navigator.pushNamed(context, Layout.id);
+                },
               ),
             ),
             body: orientation == Orientation.portrait
@@ -184,18 +186,24 @@ class _RegisterFormState extends State<RegisterForm> {
             },
           ),
           const SizedBox(height: 10.0),
+
           // Password
           const PasswordField(
             labelText: 'Password',
             hintText: 'Enter your password',
+
           ),
+
           const SizedBox(height: 10.0),
           // Confirm Password
           const PasswordField(
             labelText: 'Confirm Password',
             hintText: 'Confirm your password',
+
           ),
+
           const SizedBox(height: 10.0),
+
           // Register Button
           Container(
             decoration: BoxDecoration(

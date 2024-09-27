@@ -266,6 +266,8 @@ class AccountBtns extends StatelessWidget {
 }
 
 
+
+
 //For register page & login page
 // AccountPageTitle widget
 class AccountPageTitle extends StatelessWidget {

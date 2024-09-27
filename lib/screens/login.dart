@@ -19,7 +19,9 @@ class LoginPage extends StatelessWidget {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pushNamed(context, Layout.id);
+                },
               ),
             ),
             body: orientation == Orientation.portrait
@@ -140,6 +142,7 @@ class _LoginFormState extends State<LoginForm> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
+
           // Email
           TextFormField(
             decoration: InputDecoration(
@@ -164,14 +167,18 @@ class _LoginFormState extends State<LoginForm> {
               }
               return null;
             },
+
           ),
           const SizedBox(height: 10.0),
+
           // Password
           const PasswordField(
             labelText: 'Password',
             hintText: 'Enter your password',
           ),
+
           const SizedBox(height: 10.0),
+
           // Login Button
           Container(
             decoration: BoxDecoration(

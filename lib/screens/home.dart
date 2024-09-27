@@ -1,3 +1,4 @@
+import 'package:automate/screens/product_detail.dart';
 import 'package:automate/screens/search.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -328,12 +329,12 @@ class CarBrands extends StatelessWidget {
 
         // Car names
         List<String> carNames = [
-          'Nissan',
-          'Toyota',
-          'Suzuki',
-          'BMW',
-          'Honda',
-          'Mercedes',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
         ];
 
         return Column(
@@ -368,11 +369,12 @@ class CarouselSliderAds extends StatefulWidget {
   final double stackWidth;
   final double carddWidth;
 
-  const CarouselSliderAds(
-      {super.key,
-      required this.stackHeight,
-      required this.stackWidth,
-      required this.carddWidth});
+  const CarouselSliderAds({
+    super.key,
+    required this.stackHeight,
+    required this.stackWidth,
+    required this.carddWidth,
+  });
 
   @override
   State<CarouselSliderAds> createState() => _CarouselSliderAdsState();
@@ -438,6 +440,7 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
     });
   }
 
+  // Initialize the page controller
   @override
   void initState() {
     _pageController = PageController(
@@ -448,6 +451,7 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
     super.initState();
   }
 
+  // Dispose the timer
   @override
   void dispose() {
     _pageController.dispose();
@@ -470,135 +474,144 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
             },
             itemCount: imageList.length,
             itemBuilder: (context, index) {
-
               // Animated Builder for Carousel
               return AnimatedBuilder(
                 animation: _pageController,
                 builder: (ctx, child) {
                   return child!;
                 },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Stack(
-                    children: [
-
-                      // Card Container with Shadow
-                      Container(
-                        width: widget.carddWidth,
-                        margin: const EdgeInsets.symmetric(vertical: 12.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.0),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 12,
-                              spreadRadius: 1,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: Stack(
-                            children: [
-                              // Car Image
-                              Image.asset(
-                                imageList[index]['image_path']!,
-                                width: double.infinity,
-                                height: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-
-                              // Gradient Overlay for Text Visibility
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.black.withOpacity(0.2),
-                                        Colors.black.withOpacity(0.6),
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              // Floating Price Tag
-                              Positioned(
-                                right: 8,
-                                top: 8,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0, vertical: 6.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.withOpacity(0.9),
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  child: Text(
-                                    imageList[index]['price']!,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              // Car Title and Location
-                              Positioned(
-                                bottom: 12,
-                                left: 12,
-                                right: 12,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      imageList[index]['title']!,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4.0),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.location_on,
-                                          color: Colors.white70,
-                                          size: 18.0,
-                                        ),
-                                        const SizedBox(width: 4.0),
-                                        Text(
-                                          imageList[index]['location']!,
-                                          style: const TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 14.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProductDetailPage(),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Stack(
+                      children: [
+                        // Card Container with Shadow
+                        Container(
+                          width: widget.carddWidth,
+                          margin: const EdgeInsets.symmetric(vertical: 12.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 12,
+                                spreadRadius: 1,
+                                offset: Offset(0, 3),
                               ),
                             ],
                           ),
+
+                          // Car Image & details
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Stack(
+                              children: [
+                                // Car Image
+                                Image.asset(
+                                  imageList[index]['image_path']!,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+
+                                // Gradient Overlay for Text Visibility
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.black.withOpacity(0.2),
+                                          Colors.black.withOpacity(0.6),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                // Floating Price Tag
+                                Positioned(
+                                  right: 8,
+                                  top: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 6.0),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    child: Text(
+                                      imageList[index]['price']!,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                // Car Title and Location
+                                Positioned(
+                                  bottom: 12,
+                                  left: 12,
+                                  right: 12,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        imageList[index]['title']!,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.location_on,
+                                            color: Colors.white70,
+                                            size: 18.0,
+                                          ),
+                                          const SizedBox(width: 4.0),
+                                          Text(
+                                            imageList[index]['location']!,
+                                            style: const TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
             },
           ),
         ),
-
-        // Dot Indicators for the Carousel
         const SizedBox(height: 18.0),
 
+        // Dot Indicators
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
@@ -612,7 +625,6 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
                   curve: Curves.easeInOut,
                 );
               },
-
               // Dot Indicator
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),

@@ -78,6 +78,7 @@ flutter:
     - images/cars/e-trom.jpg
     - images/cars/premio.jpg
     - images/cars/benz.jpg
+    - images/chatEmptyImg.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

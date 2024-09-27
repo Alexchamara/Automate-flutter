@@ -1,4 +1,5 @@
 import 'package:automate/screens/account.dart';
+import 'package:automate/screens/chat.dart';
 import 'package:automate/screens/home.dart';
 import 'package:automate/screens/mytests.dart';
 import 'package:automate/screens/search.dart';
@@ -24,7 +25,7 @@ class _LayoutState extends State<Layout> {
   final List<Widget> _pages = [
     const HomePage(),
     const SearchPage(),
-    const SearchPage(), // Changed to correct page (assumed)
+    const ChatPage(), // Changed to correct page (assumed)
     const AccountPage(),
   ];
 
@@ -51,21 +52,21 @@ class _LayoutState extends State<Layout> {
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (context, orientation) {
-        if (orientation == Orientation.portrait) 
-        {
+        if (orientation == Orientation.portrait) {
           // If the orientation is portrait
           return SafeArea(
             child: Scaffold(
               // Scaffold key
               key: _scaffoldKey,
-            
+
               // AppBar
               appBar: AppBar(
                 elevation: 10.0,
                 automaticallyImplyLeading: false,
                 title: const Text(
                   'Automate',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 backgroundColor: Theme.of(context).primaryColor,
                 actions: [
@@ -79,7 +80,7 @@ class _LayoutState extends State<Layout> {
                   ),
                 ],
               ),
-            
+
               // PageView
               body: PageView(
                 controller: _pageController,
@@ -90,7 +91,7 @@ class _LayoutState extends State<Layout> {
                 },
                 children: _pages,
               ),
-            
+
               // FloatingActionButton
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
@@ -102,12 +103,15 @@ class _LayoutState extends State<Layout> {
                   borderRadius: BorderRadius.circular(50.0),
                   side: const BorderSide(color: Colors.white),
                 ),
-                child: const Icon(Icons.add,
+                child: const Icon(
+                  Icons.add,
                   color: Colors.white,
-                  size: 30,),
+                  size: 30,
+                ),
               ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+
               // BottomNavigationBar
               bottomNavigationBar: BottomAppBar(
                 shape: const CircularNotchedRectangle(),
@@ -176,145 +180,186 @@ class _LayoutState extends State<Layout> {
               // Drawer
               drawer: Drawer(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
+                child: Column(
+                  children: <Widget>[
+                    // Drawer header
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.2,
+
                       // Drawer header
-                      SizedBox  (
-                        height: MediaQuery.of(context).size.height * 0.2,
-
-                        // Drawer header
-                        child: DrawerHeader(
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFFF3B3F),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 10.0,
+                      child: DrawerHeader(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFFF3B3F),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 10.0,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Automate',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Automate',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
-                                ),
+                            ),
+                            const Spacer(),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: IconButton(
+                                icon: const Icon(Icons.dark_mode_sharp),
+                                onPressed: widget.toggleTheme,
+                                color: Colors.white,
                               ),
-                              const Spacer(),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: IconButton(
-                                  icon: const Icon(Icons.dark_mode_sharp),
-                                  onPressed: widget.toggleTheme,
-                                  color: Colors.white,
-                                ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Drawer items
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(
+                                Icons.home,
+                                size: 24,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
+                              title: Text(
+                                'Home',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 0;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
 
-                      // Drawer items
-                      ListTile(
-                        leading: Icon(
-                          Icons.home,
-                          size: 24,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                        title: Text(
-                          'Home',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = 0;
-                          });
-                          Navigator.pop(context);
-                        },
-                      ),
+                            // Create Ads
+                            ListTile(
+                              leading: Icon(
+                                Icons.create_outlined,
+                                size: 24,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
+                              ),
+                              title: Text(
+                                'Create Ads',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 0;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
 
-                      // Create Ads
-                      ListTile(
-                        leading: Icon(
-                          Icons.create_outlined,
-                          size: 24,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                        title: Text(
-                          'Create Ads',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = 0;
-                          });
-                          Navigator.pop(context);
-                        },
-                      ),
+                            // Search
+                            ListTile(
+                              leading: Icon(
+                                Icons.search,
+                                size: 24,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
+                              ),
+                              title: Text(
+                                'Search',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 1;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
 
-                      // Search
-                      ListTile(
-                        leading: Icon(
-                          Icons.search,
-                          size: 24,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                        title: Text(
-                          'Search',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = 1;
-                          });
-                          Navigator.pop(context);
-                        },
-                      ),
+                            // Chat
+                            ListTile(
+                              leading: Icon(
+                                Icons.chat,
+                                size: 24,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
+                              ),
+                              title: Text(
+                                'Chat',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 2;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
 
-                      // Chat
-                      ListTile(
-                        leading: Icon(
-                          Icons.chat,
-                          size: 24,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                        title: Text(
-                          'Chat',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = 2;
-                          });
-                          Navigator.pop(context);
-                        },
-                      ),
+                            // Account
+                            ListTile(
+                              leading: Icon(
+                                Icons.account_circle,
+                                size: 24,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
+                              ),
+                              title: Text(
+                                'Account',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 3;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
 
-                      // Account
-                      ListTile(
-                        leading: Icon(
-                          Icons.account_circle,
-                          size: 24,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                            //Log out
+                            ListTile(
+                              leading: Icon(
+                                Icons.logout,
+                                size: 24,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
+                              ),
+                              title: Text(
+                                'Log out',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              onTap: () {
+                                setState(() {});
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
                         ),
-                        title: Text(
-                          'Account',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = 3;
-                          });
-                          Navigator.pop(context);
-                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -322,7 +367,8 @@ class _LayoutState extends State<Layout> {
               body: SafeArea(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
                     return FadeTransition(opacity: animation, child: child);
                   },
                   child: _pages[_selectedIndex],
