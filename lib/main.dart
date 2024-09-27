@@ -1,3 +1,4 @@
+import 'package:automate/screens/createAds.dart';
 import 'package:automate/screens/product_detail.dart';
 import 'package:automate/screens/search.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,7 @@ class _AutomateAppState extends State<AutomateApp> {
             LoginPage.id: (context) => const LoginPage(),
             ProductDetailPage.id: (context) => const ProductDetailPage(),
             SearchPage.id: (context) => const SearchPage(),
+            CreateAds.id: (context) => const CreateAds(),
           },
         ),
       ),
@@ -82,7 +84,6 @@ class _AutomateAppState extends State<AutomateApp> {
     textTheme: const TextTheme(
       bodyLarge: TextStyle(color: Colors.black),
     ),
-
     // Red FAB in light mode
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Color(0xFFFF3B3F),

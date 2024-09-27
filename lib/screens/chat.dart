@@ -109,13 +109,6 @@ class EmptyImg extends StatelessWidget {
             ),
           ),
         ),
-        Text(
-          'Click "Chat" on an ad or post your own ad to start chatting.',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontSize: 14.0,
-              ),
-          textAlign: TextAlign.center,
-        ),
       ],
     );
   }

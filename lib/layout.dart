@@ -1,5 +1,6 @@
 import 'package:automate/screens/account.dart';
 import 'package:automate/screens/chat.dart';
+import 'package:automate/screens/createAds.dart';
 import 'package:automate/screens/home.dart';
 import 'package:automate/screens/mytests.dart';
 import 'package:automate/screens/search.dart';
@@ -95,7 +96,28 @@ class _LayoutState extends State<Layout> {
               // FloatingActionButton
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  // Action for FAB
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const CreateAds(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = 0.0;
+                        const end = 1.0;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        var scaleAnimation = animation.drive(tween);
+
+                        return ScaleTransition(
+                          scale: scaleAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
                 },
                 backgroundColor: Theme.of(context).primaryColor,
                 elevation: 6.0,
@@ -149,9 +171,7 @@ class _LayoutState extends State<Layout> {
               ),
             ),
           );
-
         } else {
-
           // If the orientation is landscape
           return SafeArea(
             child: Scaffold(

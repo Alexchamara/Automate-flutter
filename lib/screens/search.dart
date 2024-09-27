@@ -43,12 +43,12 @@ class SearchPagePortrait extends StatelessWidget {
 
             //Product 01
             ProductCard(
-              carImage: 'images/cars/audi.jpeg',
-              carTitle: 'Audi A4 2020',
-              carPrice: 'Rs. 2,500,000',
+              carImage: 'images/cars/benz.jpg',
+              carTitle: 'Mercedes-Benz A Class',
+              carPrice: 'Rs. 26,000,000',
               carLocation: 'Colombo',
               carCondition: 'Used',
-              carMileage: '10,000 km',
+              carMileage: '87,000 km',
               carFuelType: 'Petrol',
             ),
 
@@ -76,12 +76,12 @@ class SearchPagePortrait extends StatelessWidget {
 
             //Product 04
             ProductCard(
-              carImage: 'images/cars/benz.jpg',
-              carTitle: 'Mercedes-Benz A Class',
-              carPrice: 'Rs. 26,000,000',
+              carImage: 'images/cars/audi.jpeg',
+              carTitle: 'Audi A4 2020',
+              carPrice: 'Rs. 2,500,000',
               carLocation: 'Colombo',
               carCondition: 'Used',
-              carMileage: '87,000 km',
+              carMileage: '10,000 km',
               carFuelType: 'Petrol',
             ),
           ],

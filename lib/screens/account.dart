@@ -191,7 +191,7 @@ class Options extends StatelessWidget {
             child: Text(
               cardLable,
               style:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 12.0),
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 14.0),
             ),
           ),
         ],

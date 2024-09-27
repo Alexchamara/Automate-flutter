@@ -16,6 +16,13 @@ class LoginPage extends StatelessWidget {
         return SafeArea(
           child: Scaffold(
             appBar: AppBar(
+              elevation: 10.0,
+              title: const Text('Log in',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,

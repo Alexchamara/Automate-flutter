@@ -1,167 +1,172 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 
-class CarouselSliderAds extends StatefulWidget {
-  const CarouselSliderAds({super.key});
-
-  @override
-  State<CarouselSliderAds> createState() => _CarouselSliderAdsState();
-}
-
-class _CarouselSliderAdsState extends State<CarouselSliderAds> {
-  late final PageController _pageController;
-  int pageNo = 0;
-  late final Timer carouselTimer;
-
-  final List<Map<String, String>> imageList = [
-    {
-      "id": "1",
-      "image_path": "images/cars/A6.jpg",
-      "title": "Toyota Premio G Superior 2016",
-      "price": "Rs. 15,450,00"
-    },
-    {
-      "id": "2",
-      "image_path": "images/cars/e-trom.jpg",
-      "title": "Audi e-trom Q8 2024",
-      "price": "Rs. 67,500,000"
-    },
-    {
-      "id": "3",
-      "image_path": "images/cars/premio.jpg",
-      "title": "Audi A6 Sunroof Fully Loaded 2015",
-      "price": "Rs. 24,900,000"
-    },
-    {
-      "id": "4",
-      "image_path": "images/cars/premio.jpg",
-      "title": "Audi A6 Sunroof Fully Loaded 2015",
-      "price": "Rs. 24,900,000"
-    },
-    {
-      "id": "5",
-      "image_path": "images/cars/premio.jpg",
-      "title": "Audi A6 Sunroof Fully Loaded 2015",
-      "price": "Rs. 24,900,000"
-    },
-  ];
-
-  Timer getTimer() {
-    return Timer.periodic(Duration(seconds: 3), (timer) {
-      if (pageNo < imageList.length - 1) {
-        pageNo++;
-      } else {
-        pageNo = 0;
-      }
-      _pageController.animateToPage(
-        pageNo,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOutCirc,
-      );
-    });
-  }
-
-  @override
-  void initState() {
-    _pageController = PageController(
-      initialPage: 0,
-      viewportFraction: 0.8,
-    );
-    carouselTimer = getTimer();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
+class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: 250,
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: (index) {
-                pageNo = index;
-                setState(() {});
-              },
-              itemBuilder: (context, index) {
-                return AnimatedBuilder(
-                  animation: _pageController,
-                  builder: (ctx, child) {
-                    return child!;
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(12.0),
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.blue,
-                      image: DecorationImage(
-                        image: AssetImage(imageList[index]['image_path']!),
-                        fit: BoxFit.cover,
+      appBar: AppBar(
+        title: const Text('Product Details'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              // Share functionality here
+            },
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image Section
+            Container(
+              width: double.infinity,
+              child: Image.network(
+                'https://example.com/product-image.jpg', // Replace with product image URL
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Product Information
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mitsubishi Outlander 2013',
+                    style: TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Rs 14,190,000',
+                    style: TextStyle(
+                        fontSize: 20, color: Colors.green, fontWeight: FontWeight.bold),
+                  ),
+                  Text('Negotiable'),
+                  SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on, color: Colors.grey),
+                      SizedBox(width: 5),
+                      Text('Malabe, Colombo'),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Divider(),
+                  // Seller Information
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            'https://example.com/seller-image.jpg'), // Replace with seller image URL
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      SizedBox(width: 10),
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text('Punchi Car Niwasa'),
                           Text(
-                            imageList[index]['title']!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              backgroundColor: Colors.black54,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            imageList[index]['price']!,
-                            style: TextStyle(
-                              color: Colors.white,
-                              backgroundColor: Colors.black54,
-                              fontSize: 16,
-                            ),
+                            'Member since January 2016',
+                            style: TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                );
-              },
-              itemCount: imageList.length,
-            ),
-          ),
-          const SizedBox(height: 12.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              imageList.length,
-              (index) => GestureDetector(
-                onTap: () {
-                  pageNo = index;
-                  _pageController.animateToPage(
-                    pageNo,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOutCirc,
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.all(2.0),
-                  child: Icon(
-                    Icons.circle,
-                    size: 12.0,
-                    color: pageNo == index ? Colors.blue : Colors.grey,
-                  ),
-                ),
+                  SizedBox(height: 10),
+                  Divider(),
+                  // Specifications
+                  Text('Specifications', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     specColumn('Brand', 'Mitsubishi'),
+                  //     specColumn('Model', 'Outlander'),
+                  //     specColumn('Year', '2013'),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 5),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     specColumn('Condition', 'Used'),
+                  //     specColumn('Transmission', 'Automatic'),
+                  //     specColumn('Body Type', 'SUV / 4x4'),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 5),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     specColumn('Fuel Type', 'Hybrid'),
+                  //     specColumn('Engine Capacity', '1,990 cc'),
+                  //     specColumn('Mileage', '111,133 km'),
+                  //   ],
+                  // ),
+                  SizedBox(height: 10),
+                  Divider(),
+                  // Description
+                  Text('Description', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text(
+                      'The car is in excellent condition, fully maintained, and is used for personal purposes only.'),
+                  SizedBox(height: 10),
+                  Divider(),
+                  // Similar Products Section
+                  Text('Similar Ads', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10),
+                  // similarProductTile('Toyota Aqua 2013', 'Rs 7,690,000', 'https://example.com/aqua-image.jpg'),
+                  // similarProductTile('Honda Fit Shuttle 2013', 'Rs 7,985,000', 'https://example.com/honda-image.jpg'),
+                  // similarProductTile('BMW X1 2011', 'Rs 10,700,000', 'https://example.com/bmw-image.jpg'),
+                ],
               ),
             ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              // Add functionality for contact or booking
+            },
+            child: const Text('Contact Seller'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(15), backgroundColor: Colors.green,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget specColumn(String title, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(fontSize: 16, color: Colors.grey)),
+        Text(value, style: const TextStyle(fontSize: 16)),
+      ],
+    );
+  }
+
+  Widget similarProductTile(String name, String price, String imageUrl) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Image.network(imageUrl, width: 100, height: 70, fit: BoxFit.cover),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text(price, style: const TextStyle(fontSize: 16, color: Colors.green)),
+            ],
           ),
         ],
       ),

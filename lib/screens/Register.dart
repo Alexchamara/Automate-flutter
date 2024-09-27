@@ -16,6 +16,12 @@ class RegisterPage extends StatelessWidget {
         return SafeArea(
           child: Scaffold(
             appBar: AppBar(
+              title: const Text('Log in',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,
@@ -185,6 +191,7 @@ class _RegisterFormState extends State<RegisterForm> {
               return null;
             },
           ),
+
           const SizedBox(height: 10.0),
 
           // Password
