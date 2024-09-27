@@ -8,142 +8,61 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (orientation == Orientation.portrait) {
+          return const AccountPortrait();
+        } else {
+          return const AccountLandscape();
+        }
+      },
+    );
+  }
+}
+
+//Account portrait
+class AccountPortrait extends StatelessWidget {
+  const AccountPortrait({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              //Account benifites lables
-              Container(
-                child: const Column(
-                  children: [
-                    Options(
-                        icon_i: Icon(Icons.sell_outlined),
-                        cardLable: 'First time free adverts'),
-                    Options(
-                        icon_i: Icon(Icons.photo_album_outlined),
-                        cardLable: 'Up to 20 photos for an advert'),
-                    Options(
-                        icon_i: Icon(Icons.report_gmailerrorred),
-                        cardLable: 'Advert reports and analytics'),
-                    Options(
-                        icon_i: Icon(Icons.list),
-                        cardLable: 'Unlimited re-listings'),
-                    Options(
-                        icon_i: Icon(Icons.message_outlined),
-                        cardLable: 'Instant messaging with buyers'),
-                    Options(
-                        icon_i: Icon(Icons.perm_media_outlined),
-                        cardLable: 'Social media marketing'),
-                  ],
-                ),
-              ),
+              Options(
+                  icon_i: Icon(Icons.sell_outlined),
+                  cardLable: 'First time free adverts'),
+              Options(
+                  icon_i: Icon(Icons.photo_album_outlined),
+                  cardLable: 'Up to 20 photos for an advert'),
+              Options(
+                  icon_i: Icon(Icons.report_gmailerrorred),
+                  cardLable: 'Advert reports and analytics'),
+              Options(
+                  icon_i: Icon(Icons.list), cardLable: 'Unlimited re-listings'),
+              Options(
+                  icon_i: Icon(Icons.message_outlined),
+                  cardLable: 'Instant messaging with buyers'),
+              Options(
+                  icon_i: Icon(Icons.perm_media_outlined),
+                  cardLable: 'Social media marketing'),
 
+              // Buttons - Login and Register
               Column(
                 children: [
                   //Login button
-                  Container(
-                    width: 290,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(3),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            blurRadius: 5,
-                            offset: const Offset(0, 5)),
-                      ],
-                    ),
-                    child: MaterialButton(
-                      height: false ? 50 : 50,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                            const LoginPage(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(1.0, 0.0);
-                              const end = Offset(0.0, 0.0);
-                              const curve = Curves.easeOutQuint;
-
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var slideAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: slideAnimation,
-                                child: child,
-                              );
-                            },
-                            transitionDuration: const Duration(
-                                seconds: 1), // Slow-motion effect
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Log in',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                      ),
-                    ),
+                  AccountBtns(
+                    buttonText: 'Log in',
+                    navigateTo: LoginPage(),
                   ),
-                  Container(
-                    width: 290,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(3),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            blurRadius: 5,
-                            offset: const Offset(0, 5)),
-                      ],
-                    ),
-                    child: MaterialButton(
-                      height: false ? 50 : 50,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    const RegisterPage(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(1.0, 0.0);
-                              const end = Offset(0.0, 0.0);
-                              const curve = Curves.easeOutQuint;
 
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var slideAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: slideAnimation,
-                                child: child,
-                              );
-                            },
-                            transitionDuration: const Duration(
-                                seconds: 1), // Slow-motion effect
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Register',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                      ),
-                    ),
+                  //Register button
+                  AccountBtns(
+                    buttonText: 'Register',
+                    navigateTo: RegisterPage(),
                   ),
                 ],
               ),
@@ -155,7 +74,97 @@ class AccountPage extends StatelessWidget {
   }
 }
 
-//Lables for the options
+//Account landscape
+class AccountLandscape extends StatelessWidget {
+  const AccountLandscape({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        child: ListView(
+          children: const [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Options(
+                    icon_i: Icon(Icons.sell_outlined),
+                    cardLable: 'First time free adverts',
+                  ),
+                ),
+                Flexible(
+                  child: Options(
+                    icon_i: Icon(Icons.photo_album_outlined),
+                    cardLable: 'Up to 20 photos for an advert',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 5), // Minimal height between rows
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Options(
+                    icon_i: Icon(Icons.report_gmailerrorred),
+                    cardLable: 'Advert reports and analytics',
+                  ),
+                ),
+                Flexible(
+                  child: Options(
+                    icon_i: Icon(Icons.list),
+                    cardLable: 'Unlimited re-listings',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 5), // Minimal height between rows
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Options(
+                    icon_i: Icon(Icons.message_outlined),
+                    cardLable: 'Instant messaging with buyers',
+                  ),
+                ),
+                Flexible(
+                  child: Options(
+                    icon_i: Icon(Icons.perm_media_outlined),
+                    cardLable: 'Social media marketing',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 5), // Minimal height between rows
+
+            // Buttons - Login and Register
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                //Login button
+                AccountBtns(
+                  buttonText: 'Log in',
+                  navigateTo: LoginPage(),
+                ),
+
+                //Register button
+                AccountBtns(
+                  buttonText: 'Register',
+                  navigateTo: RegisterPage(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//Options
 class Options extends StatelessWidget {
   final Icon icon_i;
   final String cardLable;
@@ -164,24 +173,92 @@ class Options extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: icon_i,
-              color: Theme.of(context).primaryColor?.withOpacity(0.5),
-              iconSize: 20.0,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          IconButton(
+            onPressed: () {},
+            icon: icon_i,
+            color: Theme.of(context).primaryColor?.withOpacity(0.7),
+            iconSize: 20.0,
+          ),
+          const SizedBox(width: 8), // Space between icon and text
+          Flexible(
+            child: Text(
+              cardLable,
+              style:
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 12.0),
             ),
-            Text(cardLable,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(fontSize: 12.0)),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//Account buttons
+class AccountBtns extends StatelessWidget {
+  final String buttonText;
+  final Widget navigateTo;
+
+  const AccountBtns({
+    super.key,
+    required this.buttonText, // Text to display on the button
+    required this.navigateTo, // The page to navigate to
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 290,
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(3),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            blurRadius: 5,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: MaterialButton(
+        height: 50, // Fixed height
+        onPressed: () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  navigateTo, // Custom page to navigate to
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset(0.0, 0.0);
+                const curve = Curves.easeOutQuint;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                var slideAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: slideAnimation,
+                  child: child,
+                );
+              },
+              transitionDuration: const Duration(seconds: 1), // Transition time
+            ),
+          );
+        },
+        child: Text(
+          buttonText, // Customizable text
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
         ),
-      ],
+      ),
     );
   }
 }

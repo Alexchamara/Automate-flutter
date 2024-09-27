@@ -4,6 +4,7 @@ import 'package:automate/screens/mytests.dart';
 import 'package:automate/screens/search.dart';
 import 'package:flutter/material.dart';
 
+// Layout class
 class Layout extends StatefulWidget {
   static final String id = 'Layout';
   final VoidCallback toggleTheme;
@@ -13,29 +14,33 @@ class Layout extends StatefulWidget {
   @override
   State<Layout> createState() => _LayoutState();
 }
+
 class _LayoutState extends State<Layout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // Store the selected index
   final PageController _pageController = PageController();
 
+  // List of pages
   final List<Widget> _pages = [
     const HomePage(),
     const SearchPage(),
-    const SearchPage(),
+    const SearchPage(), // Changed to correct page (assumed)
     const AccountPage(),
   ];
 
+  // Function to handle the bottom navigation bar item tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
       _pageController.animateToPage(
         index,
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 700),
         curve: Curves.easeInOut,
       );
     });
   }
 
+  // Dispose the controller
   @override
   void dispose() {
     _pageController.dispose(); // Don't forget to dispose the controller
@@ -49,7 +54,10 @@ class _LayoutState extends State<Layout> {
         if (orientation == Orientation.portrait) {
           // If the orientation is portrait
           return Scaffold(
+            // Scaffold key
             key: _scaffoldKey,
+
+            // AppBar
             appBar: AppBar(
               elevation: 10.0,
               title: const Text(
@@ -69,7 +77,7 @@ class _LayoutState extends State<Layout> {
               ],
             ),
 
-            // Body with PageView
+            // PageView
             body: PageView(
               controller: _pageController,
               onPageChanged: (index) {
@@ -91,7 +99,9 @@ class _LayoutState extends State<Layout> {
                 borderRadius: BorderRadius.circular(50.0),
                 side: const BorderSide(color: Colors.white),
               ),
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.add,
+                color: Colors.white,
+                size: 30,),
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
@@ -137,7 +147,10 @@ class _LayoutState extends State<Layout> {
           // If the orientation is landscape
           return SafeArea(
             child: Scaffold(
+              // Scaffold key
               key: _scaffoldKey,
+
+              // AppBar
               appBar: AppBar(
                 elevation: 10.0,
                 title: const Text(
@@ -156,14 +169,17 @@ class _LayoutState extends State<Layout> {
                 ),
               ),
 
+              // Drawer
               drawer: Drawer(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
                       // Drawer header
-                      SizedBox(
+                      SizedBox  (
                         height: MediaQuery.of(context).size.height * 0.2,
+
+                        // Drawer header
                         child: DrawerHeader(
                           decoration: const BoxDecoration(
                             color: Color(0xFFFF3B3F),
@@ -298,6 +314,7 @@ class _LayoutState extends State<Layout> {
                 ),
               ),
 
+              // Body with AnimatedSwitcher
               body: SafeArea(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),

@@ -422,6 +422,7 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
     },
   ];
 
+  // Timer for carousel
   Timer getTimer() {
     return Timer.periodic(const Duration(seconds: 3), (timer) {
       if (pageNo < imageList.length - 1) {
@@ -469,6 +470,8 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
             },
             itemCount: imageList.length,
             itemBuilder: (context, index) {
+
+              // Animated Builder for Carousel
               return AnimatedBuilder(
                 animation: _pageController,
                 builder: (ctx, child) {
@@ -478,6 +481,7 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Stack(
                     children: [
+
                       // Card Container with Shadow
                       Container(
                         width: widget.carddWidth,
@@ -594,6 +598,7 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
 
         // Dot Indicators for the Carousel
         const SizedBox(height: 18.0),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
@@ -607,6 +612,8 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
                   curve: Curves.easeInOut,
                 );
               },
+
+              // Dot Indicator
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 margin: const EdgeInsets.symmetric(horizontal: 4.0),

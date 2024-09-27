@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:automate/screens/product_detail.dart';
 import 'package:flutter/material.dart';
 
+// SearchPage
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
 
@@ -22,6 +23,7 @@ class SearchPage extends StatelessWidget {
     );
   }
 }
+
 
 // SearchPagePortrait
 class SearchPagePortrait extends StatelessWidget {
@@ -114,7 +116,7 @@ Widget build(BuildContext context) {
           GridView.count(
             shrinkWrap: true,
             crossAxisCount: 2,
-            childAspectRatio: 1.5,
+            childAspectRatio: 1.1,
             physics: const NeverScrollableScrollPhysics(),
             children: const [
               ProductCard(

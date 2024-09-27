@@ -3,7 +3,6 @@ import 'package:automate/screens/search.dart';
 import 'package:flutter/material.dart';
 import 'package:automate/screens/Register.dart';
 import 'package:automate/screens/login.dart';
-
 import 'layout.dart';
 
 
@@ -11,6 +10,7 @@ void main() {
   runApp(const AutomateApp());
 }
 
+// Main application widget
 class AutomateApp extends StatefulWidget {
   const AutomateApp({super.key});
 
@@ -37,6 +37,7 @@ class _AutomateAppState extends State<AutomateApp> {
       home: AnimatedTheme(
         duration: const Duration(milliseconds: 500), // Smooth transition duration
         data: _themeMode == ThemeMode.light ? _lightTheme : _darkTheme,
+
         child: MaterialApp(
           // Set the theme mode
           themeMode: _themeMode,
