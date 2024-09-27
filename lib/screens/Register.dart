@@ -1,12 +1,40 @@
 import 'package:flutter/material.dart';
-
 import '../layout.dart';
+import 'account.dart';
 import 'login.dart';
 
+// RegisterPage
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
   static final String id = 'RegisterPage';
+
+  @override
+  Widget build(BuildContext context) {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+            body: orientation == Orientation.portrait
+                ? const RegisterPortrait()
+                : const RegisterLandscape(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// RegisterPortrait widget
+class RegisterPortrait extends StatelessWidget {
+  const RegisterPortrait({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,187 +48,24 @@ class RegisterPage extends StatelessWidget {
                 child: Center(
                   child: Column(
                     children: [
-                      Text(
-                        'Welcome to',
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
-                      const SizedBox(height: 10.0),
-                      MaterialButton(onPressed: (){
-                        // Navigator.pushNamed(context, MainLayoyt.id);
-                      },
-                        child: Text(
-                          'Automate',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10.0),
-                      Text('Register to manage your account',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold)),
+                      // AccountPageTitle
+                      const AccountPageTitle(),
 
                       // Form
                       Container(
                         // color: Colors.red[100],
                         padding: const EdgeInsets.symmetric(
-                            vertical: 30.0, horizontal: 20.0
-                        ),
+                            vertical: 30.0, horizontal: 20.0),
                         child: Column(
                           children: [
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Full Name',
-                                hintText: 'Enter your full name',
-                                hintStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 14.0),
-                                labelStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 14.0),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10.0),
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                hintText: 'Enter your email',
-                                hintStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 14.0),
-                                labelStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 14.0),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10.0),
-                            const PasswordField(
-                              labelText: 'Password',
-                              hintText: 'Enter your password',
-                            ),
-                            const SizedBox(height: 10.0),
-                            const PasswordField(
-                              labelText: 'Confirm Password',
-                              hintText: 'Confirm your password',
-                            ),
+                            // RegisterForm
+                            const RegisterForm(),
 
-                            //Register btn
-                            const SizedBox(height: 10.0),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(3),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      blurRadius: 5,
-                                      offset: const Offset(0, 5)),
-                                ],
-                              ),
-                              child: MaterialButton(
-                                height: 50,
-                                minWidth: MediaQuery.of(context).size.width,
-                                onPressed: () {},
-                                color: Theme.of(context).primaryColor,
-                                child: Text(
-                                  'Register',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                      ),
-                                ),
-                              ),
+                            SwitchBtn(
+                              textFeild: 'Already have an account?',
+                              btnName: 'Log in',
+                              navigateTo: LoginPage.id,
                             ),
-
-                            //Back Btn
-                            const SizedBox(height: 10.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Don\'t have an account?',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(fontSize: 14.0)
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, LoginPage.id);
-                                  },
-                                  child: Text('Register',
-                                      style: TextStyle(color: Theme.of(context).primaryColor)
-                                  ),
-                                ),
-                              ],
-                            ),
-                            //Back btn
-                            // MaterialButton(
-                            //   height: 50,
-                            //   minWidth: MediaQuery.of(context).size.width,
-                            //   onPressed: () {
-                            //     Navigator.push(
-                            //       context,
-                            //       PageRouteBuilder(
-                            //         pageBuilder: (context, animation,
-                            //                 secondaryAnimation) =>
-                            //             const AccountPage(),
-                            //         transitionsBuilder: (context, animation,
-                            //             secondaryAnimation, child) {
-                            //           const begin = Offset(1.0, 0.0);
-                            //           const end = Offset(0.0, 0.0);
-                            //           const curve = Curves.easeOutQuint;
-                            //
-                            //           var tween = Tween(begin: begin, end: end)
-                            //               .chain(CurveTween(curve: curve));
-                            //           var slideAnimation =
-                            //               animation.drive(tween);
-                            //
-                            //           return SlideTransition(
-                            //             position: slideAnimation,
-                            //             child: child,
-                            //           );
-                            //         },
-                            //         transitionDuration: const Duration(
-                            //             seconds: 1), // Slow-motion effect
-                            //       ),
-                            //     );
-                            //   },
-                            //   color: Theme.of(context).primaryColor,
-                            //   child: Text(
-                            //     'Back',
-                            //     style: Theme.of(context)
-                            //         .textTheme
-                            //         .bodyLarge
-                            //         ?.copyWith(
-                            //           color: Theme.of(context)
-                            //               .scaffoldBackgroundColor,
-                            //         ),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
@@ -211,6 +76,157 @@ class RegisterPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// RegisterLandscape widget
+class RegisterLandscape extends StatelessWidget {
+  const RegisterLandscape({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
+            child: Column(
+              children: [
+                const AccountPageTitle(),
+                SwitchBtn(
+                  textFeild: 'Already have an account?',
+                  btnName: 'Log in',
+                  navigateTo: LoginPage.id,
+                ),
+              ],
+            ),
+          ),
+          const Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
+              child: SingleChildScrollView(
+                child: RegisterForm(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// RegisterForm widget
+class RegisterForm extends StatefulWidget {
+  const RegisterForm({super.key});
+
+  @override
+  _RegisterFormState createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<RegisterForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        children: [
+          // Full Name
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Full Name',
+              hintText: 'Enter your full name',
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              labelStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your full name';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 10.0),
+          // Email
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Email',
+              hintText: 'Enter your email',
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              labelStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your email';
+              }
+              final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+              if (!emailRegex.hasMatch(value)) {
+                return 'Please enter a valid email address';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 10.0),
+          // Password
+          const PasswordField(
+            labelText: 'Password',
+            hintText: 'Enter your password',
+          ),
+          const SizedBox(height: 10.0),
+          // Confirm Password
+          const PasswordField(
+            labelText: 'Confirm Password',
+            hintText: 'Confirm your password',
+          ),
+          const SizedBox(height: 10.0),
+          // Register Button
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  blurRadius: 5,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: MaterialButton(
+              height: 50,
+              minWidth: MediaQuery.of(context).size.width,
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  Navigator.pushReplacementNamed(context, LoginPage.id);
+                }
+              },
+              color: Theme.of(context).primaryColor,
+              child: Text(
+                'Register',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -260,6 +276,12 @@ class _PasswordFieldState extends State<PasswordField> {
           },
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your password';
+        }
+        return null;
+      },
     );
   }
 }

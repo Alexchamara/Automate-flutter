@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../layout.dart';
 import 'Register.dart';
 import 'login.dart';
 
+// AccountPage
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
 
@@ -198,7 +200,7 @@ class Options extends StatelessWidget {
   }
 }
 
-//Account buttons
+//Account buttons widget
 class AccountBtns extends StatelessWidget {
   final String buttonText;
   final Widget navigateTo;
@@ -259,6 +261,99 @@ class AccountBtns extends StatelessWidget {
               ),
         ),
       ),
+    );
+  }
+}
+
+
+//For register page & login page
+// AccountPageTitle widget
+class AccountPageTitle extends StatelessWidget {
+  const AccountPageTitle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Welcome to',
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        ),
+        const SizedBox(height: 10.0),
+        MaterialButton(
+          onPressed: () {
+            Navigator.pushNamed(context, Layout.id);
+          },
+          child: Text(
+            'Automate',
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 30.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        Text('Register to manage your account',
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
+      ],
+    );
+  }
+}
+
+// AccountBtns widget - Submit Btn
+class SwitchBtn extends StatelessWidget {
+  final String textFeild;
+  final String btnName;
+  final String navigateTo;
+
+  const SwitchBtn({
+    Key? key,
+    required this.textFeild,
+    required this.btnName,
+    required this.navigateTo,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          textFeild,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 14.0),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) => navigateTo == LoginPage.id ? const LoginPage() : const RegisterPage(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeOutQuint;
+
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
+              ),
+            );
+          },
+          child: Text(
+            btnName,
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+        ),
+      ],
     );
   }
 }

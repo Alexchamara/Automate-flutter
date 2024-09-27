@@ -51,92 +51,96 @@ class _LayoutState extends State<Layout> {
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (context, orientation) {
-        if (orientation == Orientation.portrait) {
+        if (orientation == Orientation.portrait) 
+        {
           // If the orientation is portrait
-          return Scaffold(
-            // Scaffold key
-            key: _scaffoldKey,
-
-            // AppBar
-            appBar: AppBar(
-              elevation: 10.0,
-              title: const Text(
-                'Automate',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Theme.of(context).primaryColor,
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
-                  child: IconButton(
-                    icon: const Icon(Icons.dark_mode_sharp),
-                    onPressed: widget.toggleTheme,
-                    color: Colors.white,
-                  ),
+          return SafeArea(
+            child: Scaffold(
+              // Scaffold key
+              key: _scaffoldKey,
+            
+              // AppBar
+              appBar: AppBar(
+                elevation: 10.0,
+                automaticallyImplyLeading: false,
+                title: const Text(
+                  'Automate',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-              ],
-            ),
-
-            // PageView
-            body: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              children: _pages,
-            ),
-
-            // FloatingActionButton
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                // Action for FAB
-              },
-              backgroundColor: Theme.of(context).primaryColor,
-              elevation: 6.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50.0),
-                side: const BorderSide(color: Colors.white),
+                backgroundColor: Theme.of(context).primaryColor,
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
+                    child: IconButton(
+                      icon: const Icon(Icons.dark_mode_sharp),
+                      onPressed: widget.toggleTheme,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.add,
-                color: Colors.white,
-                size: 30,),
-            ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-            // BottomNavigationBar
-            bottomNavigationBar: BottomAppBar(
-              shape: const CircularNotchedRectangle(),
-              notchMargin: 6.0,
-              child: SizedBox(
-                height: 56.0,
-                child: BottomNavigationBar(
-                  currentIndex: _selectedIndex,
-                  onTap: _onItemTapped,
-                  items: const [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home, size: 24),
-                      label: 'Home',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.search, size: 24),
-                      label: 'Search',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.chat, size: 24),
-                      label: 'Chat',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.account_circle, size: 24),
-                      label: 'Account',
-                    ),
-                  ],
-                  type: BottomNavigationBarType.fixed,
-                  selectedItemColor: Theme.of(context).primaryColor,
-                  unselectedItemColor: Colors.grey,
-                  selectedFontSize: 12,
-                  unselectedFontSize: 12,
+            
+              // PageView
+              body: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                children: _pages,
+              ),
+            
+              // FloatingActionButton
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  // Action for FAB
+                },
+                backgroundColor: Theme.of(context).primaryColor,
+                elevation: 6.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                  side: const BorderSide(color: Colors.white),
+                ),
+                child: const Icon(Icons.add,
+                  color: Colors.white,
+                  size: 30,),
+              ),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            
+              // BottomNavigationBar
+              bottomNavigationBar: BottomAppBar(
+                shape: const CircularNotchedRectangle(),
+                notchMargin: 6.0,
+                child: SizedBox(
+                  height: 56.0,
+                  child: BottomNavigationBar(
+                    currentIndex: _selectedIndex,
+                    onTap: _onItemTapped,
+                    items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.home, size: 24),
+                        label: 'Home',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.search, size: 24),
+                        label: 'Search',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.chat, size: 24),
+                        label: 'Chat',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.account_circle, size: 24),
+                        label: 'Account',
+                      ),
+                    ],
+                    type: BottomNavigationBarType.fixed,
+                    selectedItemColor: Theme.of(context).primaryColor,
+                    unselectedItemColor: Colors.grey,
+                    selectedFontSize: 12,
+                    unselectedFontSize: 12,
+                  ),
                 ),
               ),
             ),
