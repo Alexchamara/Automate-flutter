@@ -1,6 +1,12 @@
 import 'package:automate/screens/createAds.dart';
+import 'package:automate/screens/dashboards/userdashboard/accountSecurity.dart';
+import 'package:automate/screens/dashboards/userdashboard/favourites.dart';
+import 'package:automate/screens/dashboards/userdashboard/myAds.dart';
+import 'package:automate/screens/dashboards/userdashboard/myMessages.dart';
+import 'package:automate/screens/dashboards/userdashboard/personalDetails.dart';
 import 'package:automate/screens/product_detail.dart';
 import 'package:automate/screens/search.dart';
+import 'package:automate/screens/userDashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:automate/screens/Register.dart';
 import 'package:automate/screens/login.dart';
@@ -60,6 +66,13 @@ class _AutomateAppState extends State<AutomateApp> {
             ProductDetailPage.id: (context) => const ProductDetailPage(),
             SearchPage.id: (context) => const SearchPage(),
             CreateAds.id: (context) => const CreateAds(),
+            UserDashoard.id: (context) => const UserDashoard(),
+
+            'myAds': (context) => MyAdsPage(),
+            'favourites': (context) => FavouritesPage(),
+            'myMessages': (context) => MyMessagesPage(),
+            'personalDetails': (context) => PersonalDetailsPage(),
+            'accountSecurity': (context) => AccountSecurityPage(),
           },
         ),
       ),

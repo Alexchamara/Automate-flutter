@@ -1,3 +1,4 @@
+import 'package:automate/screens/userDashboard.dart';
 import 'package:flutter/material.dart';
 import '../layout.dart';
 import 'Register.dart';
@@ -204,7 +205,7 @@ class _LoginFormState extends State<LoginForm> {
               minWidth: MediaQuery.of(context).size.width,
               onPressed: () {
                 if (_formKey.currentState?.validate() ?? false) {
-                  Navigator.pushReplacementNamed(context, Layout.id);
+                  Navigator.pushReplacementNamed(context, UserDashoard.id);
                 }
               },
               color: Theme.of(context).primaryColor,
