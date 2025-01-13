@@ -6,7 +6,7 @@ import 'package:automate/screens/dashboards/userdashboard/myMessages.dart';
 import 'package:automate/screens/dashboards/userdashboard/personalDetails.dart';
 import 'package:automate/screens/product_detail.dart';
 import 'package:automate/screens/search.dart';
-import 'package:automate/screens/userDashboard.dart';
+import 'package:automate/screens/dashboards/userDashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:automate/screens/Register.dart';
 import 'package:automate/screens/login.dart';

@@ -1,4 +1,4 @@
-import 'package:automate/screens/userDashboard.dart';
+import 'package:automate/screens/dashboards/userDashboard.dart';
 import 'package:flutter/material.dart';
 import '../layout.dart';
 import 'Register.dart';

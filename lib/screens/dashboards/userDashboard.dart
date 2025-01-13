@@ -9,7 +9,14 @@ class UserDashoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Dashboard'),
+        title: Text('Dashboard' , style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: ListView(
         children: [
