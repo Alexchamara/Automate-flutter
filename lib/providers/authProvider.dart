@@ -38,7 +38,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print(e);
-      throw e; // Re-throw the exception to handle it in the UI
+      throw e;
     }
   }
 

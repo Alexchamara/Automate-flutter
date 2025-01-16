@@ -98,4 +98,36 @@ class Auth {
       throw Exception("Logout failed with status: ${response.statusCode}");
     }
   }
+
+  //register function
+  static Future<User> register(String name, String email, String password, String confirmPassword) async {
+    var response = await http.post(
+      Uri.parse('$app_url/api/register'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': confirmPassword,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      const storage = FlutterSecureStorage();
+      var user = jsonResponse["user"];
+      await storage.write(key: "name", value: user["name"]);
+      await storage.write(key: "email", value: user["email"]);
+      await storage.write(key: "auth_token", value: jsonResponse["token"]);
+      await storage.write(key: "role", value: user["role"]);
+      return User.fromJson(user);
+    } else if (response.statusCode == 422) {
+      throw ("Validation error: ${response.body}");
+    } else {
+      throw ("Registration failed with status: ${response.statusCode}");
+    }
+  }
 }

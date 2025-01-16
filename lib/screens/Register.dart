@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../controllers/auth_controller.dart';
 import '../layout.dart';
+import '../models/user.dart';
+import '../providers/authProvider.dart';
 import 'account.dart';
+import 'dashboards/userDashboard.dart';
 import 'login.dart';
 
 // RegisterPage
@@ -16,16 +21,15 @@ class RegisterPage extends StatelessWidget {
         return SafeArea(
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Log in',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold
-                ),
+              title: const Text(
+                'Log in',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,
-                onPressed: (){
+                onPressed: () {
                   Navigator.pushNamed(context, Layout.id);
                 },
               ),
@@ -100,7 +104,8 @@ class RegisterLandscape extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
             child: Column(
               children: [
                 const AccountPageTitle(),
@@ -127,6 +132,7 @@ class RegisterLandscape extends StatelessWidget {
 }
 
 // RegisterForm widget
+// RegisterForm widget
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
 
@@ -136,6 +142,49 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  String error = "";
+  bool _obscureText = true;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void setError(String message) {
+    setState(() {
+      error = message;
+    });
+  }
+
+  void handleRegister() async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      User user = await Auth.register(
+        _nameController.text,
+        _emailController.text,
+        _passwordController.text,
+        _confirmPasswordController.text, // Pass the confirmation password
+      );
+      Provider.of<AuthProvider>(context, listen: false).setUser(user);
+      Navigator.pushNamed(context, UserDashoard.id);
+    } catch (e) {
+      setError(e.toString());
+      // _confirmPasswordController.clear();
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +195,7 @@ class _RegisterFormState extends State<RegisterForm> {
         children: [
           // Full Name
           TextFormField(
+            controller: _nameController,
             decoration: InputDecoration(
               labelText: 'Full Name',
               hintText: 'Enter your full name',
@@ -168,6 +218,7 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 10.0),
           // Email
           TextFormField(
+            controller: _emailController,
             decoration: InputDecoration(
               labelText: 'Email',
               hintText: 'Enter your email',
@@ -191,26 +242,75 @@ class _RegisterFormState extends State<RegisterForm> {
               return null;
             },
           ),
-
           const SizedBox(height: 10.0),
-
           // Password
-          const PasswordField(
-            labelText: 'Password',
-            hintText: 'Enter your password',
-
+          TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              labelStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password';
+              }
+              return null;
+            },
           ),
-
           const SizedBox(height: 10.0),
           // Confirm Password
-          const PasswordField(
-            labelText: 'Confirm Password',
-            hintText: 'Confirm your password',
-
+          TextFormField(
+            controller: _confirmPasswordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: 'Confirm Password',
+              hintText: 'Confirm your password',
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              labelStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please confirm your password';
+              }
+              return null;
+            },
           ),
-
           const SizedBox(height: 10.0),
-
           // Register Button
           Container(
             decoration: BoxDecoration(
@@ -229,18 +329,29 @@ class _RegisterFormState extends State<RegisterForm> {
               minWidth: MediaQuery.of(context).size.width,
               onPressed: () {
                 if (_formKey.currentState?.validate() ?? false) {
-                  Navigator.pushReplacementNamed(context, LoginPage.id);
+                  handleRegister();
                 }
               },
               color: Theme.of(context).primaryColor,
               child: Text(
                 'Register',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
               ),
             ),
           ),
+          if (error.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                error,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.redAccent,
+                ),
+              ),
+            ),
         ],
       ),
     );
