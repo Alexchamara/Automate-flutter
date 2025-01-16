@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../../components/dashboard/personal.dart';
 
-class PersonalDetailsPage extends StatelessWidget {
-  final TextEditingController fullNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController mobileController = TextEditingController();
+import '../../../components/adminDashboard/adsCard.dart';
+
+class ManageAdverts extends StatelessWidget {
+  const ManageAdverts({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Personal Details',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Manage Advertisements',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
@@ -29,7 +27,7 @@ class PersonalDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Update Your Personal Details',
+              'Manage Adverts',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -37,14 +35,14 @@ class PersonalDetailsPage extends StatelessWidget {
             ),
             SizedBox(height: 10.0),
             Text(
-              'Please fill in the form below to update your personal details.',
+              'Please fill in the form below to manage advertisements.',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.grey,
               ),
             ),
             SizedBox(height: 20.0),
-            Personal(),
+            AdvertCard(),
           ],
         ),
       ),

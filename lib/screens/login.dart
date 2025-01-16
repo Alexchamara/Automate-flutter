@@ -1,3 +1,4 @@
+import 'package:automate/screens/dashboards/adminDashboard.dart';
 import 'package:automate/screens/dashboards/userDashboard.dart';
 import 'package:flutter/material.dart';
 import '../layout.dart';
@@ -205,7 +206,7 @@ class _LoginFormState extends State<LoginForm> {
               minWidth: MediaQuery.of(context).size.width,
               onPressed: () {
                 if (_formKey.currentState?.validate() ?? false) {
-                  Navigator.pushReplacementNamed(context, UserDashoard.id);
+                  Navigator.pushReplacementNamed(context, AdminDashboard.id);
                 }
               },
               color: Theme.of(context).primaryColor,

@@ -1,4 +1,5 @@
 import 'package:automate/screens/account.dart';
+import 'package:automate/screens/advertForm.dart';
 import 'package:automate/screens/chat.dart';
 import 'package:automate/screens/createAds.dart';
 import 'package:automate/screens/home.dart';
@@ -100,7 +101,7 @@ class _LayoutState extends State<Layout> {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          const CreateAds(),
+                          const CreateAdvertForm(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                         const begin = 0.0;

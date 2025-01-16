@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../components/dashboard/personal.dart';
 
-import '../../../components/dashboard/security.dart';
+class PersonalDetailsPage extends StatelessWidget {
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
 
-class AccountSecurityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +29,7 @@ class AccountSecurityPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Update Your Password',
+              'Update Your Personal Details',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -34,14 +37,14 @@ class AccountSecurityPage extends StatelessWidget {
             ),
             SizedBox(height: 10.0),
             Text(
-              'Please fill in the form below to update your password.',
+              'Please fill in the form below to update your personal details.',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.grey,
               ),
             ),
             SizedBox(height: 20.0),
-            Security(),
+            Personal(),
           ],
         ),
       ),

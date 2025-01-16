@@ -1,9 +1,14 @@
+import 'package:automate/screens/advertForm.dart';
 import 'package:automate/screens/createAds.dart';
-import 'package:automate/screens/dashboards/userdashboard/accountSecurity.dart';
+import 'package:automate/screens/dashboards/adminDashboard.dart';
+import 'package:automate/screens/dashboards/accountSecurity.dart';
+import 'package:automate/screens/dashboards/admindashboard/admins.dart';
+import 'package:automate/screens/dashboards/admindashboard/ads.dart';
+import 'package:automate/screens/dashboards/admindashboard/users.dart';
 import 'package:automate/screens/dashboards/userdashboard/favourites.dart';
 import 'package:automate/screens/dashboards/userdashboard/myAds.dart';
 import 'package:automate/screens/dashboards/userdashboard/myMessages.dart';
-import 'package:automate/screens/dashboards/userdashboard/personalDetails.dart';
+import 'package:automate/screens/dashboards/personalDetails.dart';
 import 'package:automate/screens/product_detail.dart';
 import 'package:automate/screens/search.dart';
 import 'package:automate/screens/dashboards/userDashboard.dart';
@@ -67,12 +72,18 @@ class _AutomateAppState extends State<AutomateApp> {
             SearchPage.id: (context) => const SearchPage(),
             CreateAds.id: (context) => const CreateAds(),
             UserDashoard.id: (context) => const UserDashoard(),
+            AdminDashboard.id: (context) => const AdminDashboard(),
+            CreateAdvertForm.id: (context) => const CreateAdvertForm(),
+
 
             'myAds': (context) => MyAdsPage(),
             'favourites': (context) => FavouritesPage(),
             'myMessages': (context) => MyMessagesPage(),
             'personalDetails': (context) => PersonalDetailsPage(),
             'accountSecurity': (context) => AccountSecurityPage(),
+            'addAdmin': (context) => AddAdmin(),
+            'manageUsers': (context) => MangeUsers(),
+            'manageAdverts': (context) => ManageAdverts(),
           },
         ),
       ),
