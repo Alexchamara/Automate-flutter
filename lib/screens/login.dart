@@ -1,7 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/authProvider.dart';
+
 import 'package:automate/screens/dashboards/adminDashboard.dart';
 import 'package:automate/screens/dashboards/userDashboard.dart';
-import 'package:flutter/material.dart';
+import '../controllers/auth_controller.dart';
 import '../layout.dart';
+import '../models/user.dart';
 import 'Register.dart';
 import 'account.dart';
 
@@ -19,11 +24,10 @@ class LoginPage extends StatelessWidget {
           child: Scaffold(
             appBar: AppBar(
               elevation: 10.0,
-              title: const Text('Log in',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold
-                ),
+              title: const Text(
+                'Log in',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -144,6 +148,43 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
 
+  String error = "";
+  bool _obscureText = true;
+
+  void setError(String message) {
+    setState(() {
+      error = message;
+    });
+  }
+
+  void handleLogin() async {
+    try {
+      User user =
+          await Auth.login(_emailController.text, _passwordController.text);
+      Provider.of<AuthProvider>(context, listen: false).setUser(user);
+
+      if (user.role == 'admin') {
+        Navigator.pushNamed(context, AdminDashboard.id);
+      } else {
+        Navigator.pushNamed(context, UserDashoard.id);
+      }
+    } catch (e) {
+      setError(e.toString());
+      _passwordController.clear();
+      print(e);
+    }
+  }
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -151,9 +192,9 @@ class _LoginFormState extends State<LoginForm> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
-
           // Email
           TextFormField(
+            controller: _emailController,
             decoration: InputDecoration(
               labelText: 'Email',
               hintText: 'Enter your email',
@@ -176,14 +217,41 @@ class _LoginFormState extends State<LoginForm> {
               }
               return null;
             },
-
           ),
           const SizedBox(height: 10.0),
 
           // Password
-          const PasswordField(
-            labelText: 'Password',
-            hintText: 'Enter your password',
+          TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              labelStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password';
+              }
+              return null;
+            },
           ),
 
           const SizedBox(height: 10.0),
@@ -205,19 +273,30 @@ class _LoginFormState extends State<LoginForm> {
               height: 50,
               minWidth: MediaQuery.of(context).size.width,
               onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  Navigator.pushReplacementNamed(context, AdminDashboard.id);
+                if (_formKey.currentState!.validate()) {
+                  handleLogin();
                 }
               },
               color: Theme.of(context).primaryColor,
               child: Text(
                 'Log in',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
               ),
             ),
           ),
+          if (error.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                error,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.redAccent,
+                ),
+              ),
+            ),
         ],
       ),
     );

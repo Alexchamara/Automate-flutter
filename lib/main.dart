@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:automate/providers/authProvider.dart';
+
 import 'package:automate/screens/advertForm.dart';
 import 'package:automate/screens/createAds.dart';
 import 'package:automate/screens/dashboards/adminDashboard.dart';
@@ -12,14 +16,25 @@ import 'package:automate/screens/dashboards/personalDetails.dart';
 import 'package:automate/screens/product_detail.dart';
 import 'package:automate/screens/search.dart';
 import 'package:automate/screens/dashboards/userDashboard.dart';
-import 'package:flutter/material.dart';
 import 'package:automate/screens/Register.dart';
 import 'package:automate/screens/login.dart';
 import 'layout.dart';
 
+// void main() {
+//   runApp(const AutomateApp());
+// }
 
 void main() {
-  runApp(const AutomateApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+      ],
+      child: const AutomateApp(),
+    ),
+  );
 }
 
 // Main application widget
@@ -38,7 +53,8 @@ class _AutomateAppState extends State<AutomateApp> {
   void _toggleTheme() {
     setState(() {
       // Toggle theme mode
-      _themeMode = (_themeMode == ThemeMode.light) ? ThemeMode.dark : ThemeMode.light;
+      _themeMode =
+          (_themeMode == ThemeMode.light) ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
@@ -47,7 +63,8 @@ class _AutomateAppState extends State<AutomateApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AnimatedTheme(
-        duration: const Duration(milliseconds: 500), // Smooth transition duration
+        duration:
+            const Duration(milliseconds: 500), // Smooth transition duration
         data: _themeMode == ThemeMode.light ? _lightTheme : _darkTheme,
 
         child: MaterialApp(
@@ -74,8 +91,6 @@ class _AutomateAppState extends State<AutomateApp> {
             UserDashoard.id: (context) => const UserDashoard(),
             AdminDashboard.id: (context) => const AdminDashboard(),
             CreateAdvertForm.id: (context) => const CreateAdvertForm(),
-
-
             'myAds': (context) => MyAdsPage(),
             'favourites': (context) => FavouritesPage(),
             'myMessages': (context) => MyMessagesPage(),
@@ -92,7 +107,7 @@ class _AutomateAppState extends State<AutomateApp> {
 
   // Light theme
   final ThemeData _lightTheme = ThemeData(
-  // Bright red primary color
+    // Bright red primary color
     primaryColor: const Color(0xFFFF3B3F),
 
     // Light background
@@ -113,7 +128,6 @@ class _AutomateAppState extends State<AutomateApp> {
       backgroundColor: Color(0xFFFF3B3F),
     ),
   );
-
 
   // Dark theme
   final ThemeData _darkTheme = ThemeData(
