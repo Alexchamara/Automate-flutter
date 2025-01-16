@@ -12,14 +12,34 @@ class Auth {
 
   //log in function
   static Future<User> login(String email, String password) async {
-    final response = await http.post(
+    final deviceInfoPlugin = DeviceInfoPlugin();
+    final deviceInfo = await deviceInfoPlugin.androidInfo;
+    var response = await http.post(
       Uri.parse('$app_url/api/login'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: jsonEncode({'email': email, 'password': password}),
+      body: jsonEncode({'email': email, 'password': password, "device_name": deviceInfo.model,
+      }),
     );
+
+    var jsonResponse = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      const storage = FlutterSecureStorage();
+      var user = jsonResponse["user"];
+      await storage.write(key: "name", value: user["name"]);
+      await storage.write(key: "email", value: user["email"]);
+      await storage.write(key: "auth_token", value: jsonResponse["token"]);
+      await storage.write(key: "role", value: user["role"]);
+      return User(
+        id: user["id"],
+        name: user["name"],
+        email: user["email"],
+        token: jsonResponse["token"],
+        role: user["role"],
+      );
+    }
 
     if (response.statusCode == 302) {
       // Follow the redirect manually
@@ -52,17 +72,30 @@ class Auth {
   static Future<void> logout() async {
     const storage = FlutterSecureStorage();
     String? token = await storage.read(key: "auth_token");
+
+    if (token == null) {
+      print("No auth token found");
+      return;
+    }
+
     var response = await http.post(
       Uri.parse('$app_url/api/logout'),
       headers: {
-        "Content-Type": "application/json",
-        HttpHeaders.authorizationHeader: 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
       },
     );
+
     if (response.statusCode == 200) {
       await storage.delete(key: "name");
       await storage.delete(key: "email");
       await storage.delete(key: "auth_token");
+      await storage.delete(key: "role");
+    } else if (response.statusCode == 401) {
+      throw Exception("Unauthorized: Invalid token");
+    } else {
+      throw Exception("Logout failed with status: ${response.statusCode}");
     }
   }
 }

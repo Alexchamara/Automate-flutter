@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/authProvider.dart';
+import '../login.dart';
 
 class UserDashoard extends StatelessWidget {
   const UserDashoard({super.key});
@@ -9,7 +13,8 @@ class UserDashoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard' , style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text('Dashboard',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
@@ -73,12 +78,20 @@ class UserDashoard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Log out'),
-              onTap: () {
-                // Handle log out
-              },
-            ),
+                leading: Icon(Icons.logout),
+                title: Text('Log out'),
+                onTap: () async {
+                  try {
+                    await Provider.of<AuthProvider>(context, listen: false)
+                        .logOut();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, LoginPage.id, (route) => false);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Logout failed: ${e.toString()}')),
+                    );
+                  }
+                }),
           ),
         ],
       ),
