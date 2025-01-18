@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../services/auth_service.dart';
+
 class Auth {
   static const String app_url = Config.APP_URL;
 
@@ -20,7 +22,10 @@ class Auth {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: jsonEncode({'email': email, 'password': password, "device_name": deviceInfo.model,
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        "device_name": deviceInfo.model,
       }),
     );
 
@@ -32,6 +37,7 @@ class Auth {
       await storage.write(key: "email", value: user["email"]);
       await storage.write(key: "auth_token", value: jsonResponse["token"]);
       await storage.write(key: "role", value: user["role"]);
+      AuthService.instance.setToken(jsonResponse["token"]);
       return User(
         id: user["id"],
         name: user["name"],

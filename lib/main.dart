@@ -1,3 +1,4 @@
+import 'package:automate/routes/routeGuard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:automate/providers/authProvider.dart';
@@ -88,9 +89,9 @@ class _AutomateAppState extends State<AutomateApp> {
             ProductDetailPage.id: (context) => const ProductDetailPage(),
             SearchPage.id: (context) => const SearchPage(),
             CreateAds.id: (context) => const CreateAds(),
-            UserDashoard.id: (context) => const UserDashoard(),
-            AdminDashboard.id: (context) => const AdminDashboard(),
-            CreateAdvertForm.id: (context) => const CreateAdvertForm(),
+            UserDashoard.id: (context) => RouteGuard(child: const UserDashoard()),
+            AdminDashboard.id: (context) => RouteGuard(child: const AdminDashboard()),
+            CreateAdvertForm.id: (context) => RouteGuard(child: const CreateAdvertForm()),
             'myAds': (context) => MyAdsPage(),
             'favourites': (context) => FavouritesPage(),
             'myMessages': (context) => MyMessagesPage(),

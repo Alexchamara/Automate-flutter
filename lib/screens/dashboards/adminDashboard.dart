@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/authProvider.dart';
+import '../login.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -97,8 +101,18 @@ class AdminDashboard extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.logout),
                     title: const Text('Logout'),
-                    onTap: () {
-                      Navigator.pushNamed(context, 'login');
+                    onTap: () async {
+                      try {
+                        await Provider.of<AuthProvider>(context, listen: false)
+                            .logOut();
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, LoginPage.id, (route) => false);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Logout failed: ${e.toString()}')),
+                        );
+                      }
                     },
                   ),
                 ],

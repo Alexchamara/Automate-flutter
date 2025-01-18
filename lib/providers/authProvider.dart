@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../controllers/auth_controller.dart';
+import '../services/auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
   User _user = User(id: 0, name: '', email: '', token: '', role: '');
+
+  bool _isAuthenticated = false;
+  String _token = "";
 
   AuthProvider() {
     _loadUserFromStorage();
@@ -31,6 +35,27 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void login(String token) {
+    _token = token;
+    _user = User(
+      id: _user.id,
+      name: _user.name,
+      email: _user.email,
+      token: token,
+      role: _user.role,
+    );
+    _isAuthenticated = true;
+    AuthService.instance.setToken(token);
+    notifyListeners();
+  }
+
+  // void logout() {
+  //   _token = "";
+  //   _isAuthenticated = false;
+  //   AuthService.instance.setToken("");
+  //   notifyListeners();
+  // }
+
   Future<void> logOut() async {
     try {
       await Auth.logout();
@@ -44,6 +69,10 @@ class AuthProvider with ChangeNotifier {
 
   User getUser() {
     return _user;
+  }
+
+  String getUserRole() {
+    return _user.role;
   }
 
   bool authenticated() {

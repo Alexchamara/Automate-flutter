@@ -181,7 +181,6 @@ class _RegisterFormState extends State<RegisterForm> {
       Navigator.pushNamed(context, UserDashoard.id);
     } catch (e) {
       setError(e.toString());
-      // _confirmPasswordController.clear();
       print(e);
     }
   }

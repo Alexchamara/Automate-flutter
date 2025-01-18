@@ -1,11 +1,16 @@
+import 'package:automate/providers/authProvider.dart';
 import 'package:automate/screens/account.dart';
 import 'package:automate/screens/advertForm.dart';
 import 'package:automate/screens/chat.dart';
 import 'package:automate/screens/createAds.dart';
+import 'package:automate/screens/dashboards/adminDashboard.dart';
+import 'package:automate/screens/dashboards/userDashboard.dart';
 import 'package:automate/screens/home.dart';
+import 'package:automate/screens/login.dart';
 import 'package:automate/screens/mytests.dart';
 import 'package:automate/screens/search.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // Layout class
 class Layout extends StatefulWidget {
@@ -32,15 +37,40 @@ class _LayoutState extends State<Layout> {
   ];
 
   // Function to handle the bottom navigation bar item tap
+  // void _onItemTapped(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //     _pageController.animateToPage(
+  //       index,
+  //       duration: const Duration(milliseconds: 700),
+  //       curve: Curves.easeInOut,
+  //     );
+  //   });
+  // }
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.easeInOut,
-      );
-    });
+    if (index == 3) {
+      // Account tab index
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (!authProvider.authenticated()) {
+        Navigator.pushNamed(context, LoginPage.id);
+      } else {
+        final userRole = authProvider.getUserRole();
+        if (userRole == 'admin') {
+          Navigator.pushNamed(context, AdminDashboard.id);
+        } else {
+          Navigator.pushNamed(context, UserDashoard.id);
+        }
+      }
+    } else {
+      setState(() {
+        _selectedIndex = index;
+        _pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
   }
 
   // Dispose the controller
