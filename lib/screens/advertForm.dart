@@ -23,8 +23,8 @@ class CreateAdvertForm extends StatefulWidget {
 
 class _CreateAdvertFormState extends State<CreateAdvertForm> {
   int _currentStep = 0;
-
   final _formKey = GlobalKey<FormState>();
+  String? _validationMessage;
 
   // Controllers for Advert Details
   final TextEditingController _priceController = TextEditingController();
@@ -95,12 +95,18 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
 
       try {
         await ListingController.createListing(context, listing);
+        setState(() {
+          _validationMessage = null; // Clear validation message on success
+        });
       } catch (e) {
-        // Handle error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to create listing: ${e.toString()}')),
-        );
+        setState(() {
+          _validationMessage = 'Failed to create listing: ${e.toString()}';
+        });
       }
+    } else {
+      setState(() {
+        _validationMessage = 'Please fill out all required fields.';
+      });
     }
   }
 
@@ -347,6 +353,28 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
                     });
                   }
                 },
+                controlsBuilder:
+                    (BuildContext context, ControlsDetails details) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+                    child: Row(
+                      children: <Widget>[
+                        if (_currentStep != 1)
+                          ElevatedButton(
+                            onPressed: details.onStepContinue,
+                            child: const Text('Next'),
+                          ),
+                        const SizedBox(
+                            width: 8),
+                        if (_currentStep != 0)
+                          ElevatedButton(
+                            onPressed: details.onStepCancel,
+                            child: const Text('Back'),
+                          ),
+                      ],
+                    ),
+                  );
+                },
                 steps: [
                   Step(
                     title: Text("Step 1: Vehicle Details"),
@@ -508,6 +536,14 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
                             return null;
                           },
                         ),
+                        if (_validationMessage != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Text(
+                              _validationMessage!,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
                       ],
                     ),
                     isActive: _currentStep >= 1,

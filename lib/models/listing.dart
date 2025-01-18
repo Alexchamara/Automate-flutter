@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 class Listing {
@@ -59,7 +60,11 @@ class Listing {
       'contactNumber': phone,
       'advertEmail': email,
       'location': location,
-      'images': images,
+      'images': images?.map((file) {
+        final bytes = file.readAsBytesSync();
+        final base64Str = base64Encode(bytes);
+        return 'data:image/${file.path.split('.').last};base64,$base64Str';
+      }).toList(),
     };
   }
 }
