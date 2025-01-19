@@ -1,8 +1,12 @@
+import 'package:automate/models/listing.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 
 class AdvertDetailPage extends StatelessWidget {
-  const AdvertDetailPage({super.key});
+  final Listing listing;
+
+  const AdvertDetailPage({required this.listing, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +44,8 @@ class AdvertDetailPage extends StatelessWidget {
 
             // Body
             body: orientation == Orientation.portrait
-                ? const ProductPortrait()
-                : const ProductLandscape(),
+                ? ProductPortrait(listing: listing)
+                : ProductLandscape(listing: listing),
           ),
         );
       },
@@ -51,18 +55,20 @@ class AdvertDetailPage extends StatelessWidget {
 
 //ProductPortrait widget
 class ProductPortrait extends StatelessWidget {
-  const ProductPortrait({super.key});
+  final Listing listing;
+
+  const ProductPortrait({required this.listing, super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             ImageSlider(height: 275, fitSize: StackFit.expand),
             SizedBox(height: 20),
-            ProductDetails(),
+            ProductDetails(listing: listing),
             // Bottom Navigation Bar
           ],
         ),
@@ -111,18 +117,20 @@ class ProductPortrait extends StatelessWidget {
 
 //ProductLandscape widget
 class ProductLandscape extends StatelessWidget {
-  const ProductLandscape({super.key});
+  final Listing listing;
+
+  const ProductLandscape({required this.listing, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             ImageSlider(height: 300, fitSize: StackFit.expand),
             SizedBox(height: 20),
-            ProductDetails(),
+            ProductDetails(listing: listing),
           ],
         ),
       ),
@@ -170,11 +178,11 @@ class _ImageSliderState extends State<ImageSlider> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AdvertDetailPage()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => const AdvertDetailPage()),
+                      // );
                     },
                     child: CarouselSlider.builder(
                       itemCount: imageList.length,
@@ -215,30 +223,52 @@ class _ImageSliderState extends State<ImageSlider> {
 
 //ProductDetails widget
 class ProductDetails extends StatelessWidget {
-  const ProductDetails({super.key});
+  final Listing listing;
+
+  const ProductDetails({required this.listing, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Product Name Section
-          Text(
-            'Mercedes-Benz A Class',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 24.0,
-                ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                listing.brand,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24.0,
+                    ),
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.location_on, color: Colors.red, size: 24),
+                  const SizedBox(width: 4),
+                  Text(
+                    listing.location,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.0,
+                        ),
+                  ),
+                ],
+              )
+            ],
           ),
 
           const SizedBox(height: 10),
 
           // Product Price
-          const Text(
-            'Rs. 26,000,000',
-            style: TextStyle(
+          Text(
+            'Rs.${listing.price.toString()}',
+            style: const TextStyle(
               color: Colors.red,
               fontSize: 22.0,
               fontWeight: FontWeight.bold,
@@ -247,35 +277,47 @@ class ProductDetails extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Product Features
-          _sectionTitleWithIcon(context, 'Car Features', Icons.star),
-          Text(
-            '�� Air Conditioning\n• Airbags\n• Alarm System\n• Alloy Wheels\n• Bluetooth Interface\n• CD/DVD Autochanger\n• Cruise Control\n• Direct Fuel Injection\n• Electric Parking Brake\n• Wind Deflector',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14.0,
-                  height: 1.5,
-                ),
-          ),
-          const SizedBox(height: 20),
-
           // Product Specifications
           _sectionTitleWithIcon(
-              context, 'Product Specifications', Icons.rate_review),
+              context, 'Car Specifications', Icons.rate_review, Colors.red),
           Text(
-            '• Condition: Used\n• Fuel: Petrol\n• Engine: 1.4L\n• Transmission: Automatic\n• Year: 2020\n• Mileage: 10,000 km',
+            '• Condition: ${listing.condition}'
+            '\n• Fuel: ${listing.fuelType}'
+            '\n• Engine: ${listing.engine}'
+            '\n• Transmission: ${listing.gearBox}'
+            '\n• Year: ${listing.year}'
+            '\n• Mileage: ${listing.mileage} km'
+            '\n• Color: ${listing.color}'
+            '\n• Body Type: ${listing.bodyType}'
+            '\n• Location: ${listing.location}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
                   height: 1.5,
                 ),
           ),
+
+          const SizedBox(height: 20),
+
+          // Contact Details
+          _sectionTitleWithIcon(context, 'Seller Details', Icons.contact_phone, Colors.red),
+          Text(
+            '• Phone: ${listing.phone}'
+            '\n• Email: ${listing.email}'
+            '\n• Location: ${listing.location}',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  height: 1.5,
+                ),
+          ),
+
           const SizedBox(height: 20),
 
           // Product Description
-          _sectionTitleWithIcon(context, 'Description', Icons.description),
+          _sectionTitleWithIcon(context, 'Description', Icons.description, Colors.red),
           Text(
-            'The CEO of an internationally recognised company drives a Mercedes Benz A180 2020 registered car.',
+            listing.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -283,7 +325,40 @@ class ProductDetails extends StatelessWidget {
                 ),
             textAlign: TextAlign.justify,
           ),
+
           const SizedBox(height: 20),
+
+          // Product Features
+          _sectionTitleWithIcon(context, 'Advert Details', Icons.details, Colors.red),
+          Text(
+            '• Advert Status: ${listing.isActive}'
+            '\n• Advert ID: ${listing.id}'
+            '\n• Created At: ${formatter.format(listing.createdAt)}'
+            '\n• Updated At: ${formatter.format(listing.updatedAt)}',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  height: 1.5,
+                ),
+          ),
+
+          const SizedBox(height: 20),
+
+          //User Details
+          _sectionTitleWithIcon(context, 'User Details', Icons.person, Colors.red),
+          Text(
+            '• User ID: ${listing.userId}'
+            '\n• Token: ${listing.token}'
+            '\n• Status: ${listing.status}'
+            '\n• Status Updated At: ${formatter.format(listing.statusUpdatedAt)}'
+            '\n• Payment Status: ${listing.paymentStatus}'
+            '\n• Payment Status Updated At: ${listing.paymentStatusUpdatedAt != null ? formatter.format(listing.paymentStatusUpdatedAt!) : 'N/A'}',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  height: 1.5,
+                ),
+          ),
         ],
       ),
     );
@@ -291,7 +366,7 @@ class ProductDetails extends StatelessWidget {
 
   // Reusable widget for section titles with icons
   Widget _sectionTitleWithIcon(
-      BuildContext context, String title, IconData icon) {
+      BuildContext context, String title, IconData icon, Color red) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(

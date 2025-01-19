@@ -7,17 +7,19 @@ import '../models/listing.dart';
 import '../config.dart';
 import 'package:http/http.dart' as http;
 
-
-class ListingController{
-
-  static Future<void> createListing(BuildContext context, Listing listing) async {
+class ListingController {
+  //Create a new listing
+  static Future<void> createListing(
+      BuildContext context, Listing listing) async {
     try {
       final uri = Uri.parse('${Config.APP_URL}/api/listings/store');
-     final request = http.MultipartRequest('POST', uri)
-  ..headers['Content-Type'] = 'application/json'
-  ..headers['Accept'] = 'application/json'
-  ..headers['Authorization'] = 'Bearer ${AuthService.instance.token}'
-  ..fields.addAll(listing.toJson().map((key, value) => MapEntry(key, value.toString())));
+      final request = http.MultipartRequest('POST', uri)
+        ..headers['Content-Type'] = 'application/json'
+        ..headers['Accept'] = 'application/json'
+        ..headers['Authorization'] = 'Bearer ${AuthService.instance.token}'
+        ..fields.addAll(listing
+            .toJson()
+            .map((key, value) => MapEntry(key, value.toString())));
 
       // Attach image files
       if (listing.images != null) {
@@ -41,7 +43,72 @@ class ListingController{
       print("Exception: $e");
     }
   }
+
+  // Fetch listings related to the authenticated user
+  static Future<List<Listing>> getUserListings() async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/user/listings');
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey('data')) {
+          List<dynamic> listingsJson = jsonResponse['data'];
+          return listingsJson
+              .map((data) => Listing.fromJson(data['advert']))
+              .toList();
+        } else {
+          throw Exception("Unexpected response format");
+        }
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return [];
+    }
+  }
+
+  // Update the status of an advert
+  static Future<void> updateAdvertStatus(int advertId, bool isActive) async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/listings/$advertId/toggle-status');
+      final response = await http.patch(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+        body: json.encode({'isActive': isActive}),
+      );
+
+      // print the advertID
+      print("Advert ID: $advertId");
+
+      if (response.statusCode == 200) {
+        print("Advert status updated successfully!");
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+  }
 }
+
+
 
 // class ListingController {
 //   static const String app_url = Config.APP_URL;

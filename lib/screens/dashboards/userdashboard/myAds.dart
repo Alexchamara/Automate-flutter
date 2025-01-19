@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/dashboard/advertCard.dart';
+import '../../../controllers/listing_controller.dart';
+import '../../../models/listing.dart';
 
 class MyAdsPage extends StatelessWidget {
   @override
@@ -18,10 +20,24 @@ class MyAdsPage extends StatelessWidget {
           },
         ),
       ),
-      body: ListView(
-        children: const [
-          AdvertCard(),
-        ],
+      body: FutureBuilder<List<Listing>>(
+        future: ListingController.getUserListings(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No ads found.'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return AdvertCard(listing: snapshot.data![index]);
+              },
+            );
+          }
+        },
       ),
     );
   }

@@ -73,24 +73,32 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
       }
 
       final listing = Listing(
+        id: 0,
+        advertId: 0,
+        status: '',
+        statusUpdatedAt: DateTime.now(),
+        isActive: true,
+        paymentStatus: '',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        userId: authProvider.getUser().id,
+        token: '',
+        brand: _selectedBrand!,
+        model: _selectedModel!,
+        year: _selectedYear!,
+        mileage: int.parse(_mileageController.text),
+        condition: _selectedCondition!,
+        color: _selectedColor!,
+        engine: _selectedEngine!,
+        bodyType: _selectedBodyType!,
+        gearBox: _selectedGearBox!,
+        fuelType: _selectedFuelType!,
         price: double.parse(_priceController.text),
         description: _descriptionController.text,
         phone: _phoneController.text,
         email: _emailController.text,
         location: _locationController.text,
-        mileage: int.parse(_mileageController.text),
-        brand: _selectedBrand!,
-        model: _selectedModel!,
-        year: _selectedYear!,
-        condition: _selectedCondition!,
-        engine: _selectedEngine!,
-        color: _selectedColor!,
-        bodyType: _selectedBodyType!,
-        gearBox: _selectedGearBox!,
-        fuelType: _selectedFuelType!,
         images: _uploadedImages,
-        userId: authProvider.getUser().id,
-        token: '',
       );
 
       try {
@@ -364,8 +372,7 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
                             onPressed: details.onStepContinue,
                             child: const Text('Next'),
                           ),
-                        const SizedBox(
-                            width: 8),
+                        const SizedBox(width: 8),
                         if (_currentStep != 0)
                           ElevatedButton(
                             onPressed: details.onStepCancel,

@@ -1,8 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:automate/models/listing.dart';
+import '../../controllers/listing_controller.dart';
 import 'advertDetailPage.dart';
 
-class AdvertCard extends StatelessWidget {
-  const AdvertCard({super.key});
+class AdvertCard extends StatefulWidget {
+  final Listing listing;
+
+  const AdvertCard({required this.listing, Key? key}) : super(key: key);
+
+  @override
+  State<AdvertCard> createState() => _AdvertCardState();
+}
+
+class _AdvertCardState extends State<AdvertCard> {
+  late bool isActive;
+
+  @override
+  void initState() {
+    super.initState();
+    isActive = widget.listing.isActive;
+  }
+
+  void toggleAdvertStatus() async {
+    setState(() {
+      isActive = !isActive;
+    });
+
+    await ListingController.updateAdvertStatus(
+        widget.listing.advertId, isActive);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,35 +44,54 @@ class AdvertCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('title', style: Theme.of(context).textTheme.titleLarge),
+                Text(widget.listing.brand,
+                    style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 5.0),
-                Text('Price: price',
+                Text('Price: Rs.${widget.listing.price}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 5.0),
-                Text('Location: location',
+                Text('Location: ${widget.listing.location}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 5.0),
-                Text('Status: status',
+                Text('Status: ${widget.listing.isActive}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 10.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('View Advert'),
-                    ),
-                    ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AdvertDetailPage(),
+                            builder: (context) =>
+                                AdvertDetailPage(listing: widget.listing),
                           ),
                         );
                       },
                       child: const Text('Manage Advert'),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Advert Status:',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Switch(
+                          value: isActive,
+                          onChanged: (value) {
+                            toggleAdvertStatus();
+                          },
+                          activeColor: Colors.green,
+                          inactiveThumbColor: Colors.red,
+                        ),
+                      ],
+                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {},
+                    //   child: const Text('View Advert'),
+                    // ),
                   ],
                 ),
               ],
