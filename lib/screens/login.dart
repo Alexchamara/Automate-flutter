@@ -9,10 +9,13 @@ import '../layout.dart';
 import '../models/user.dart';
 import 'Register.dart';
 import 'account.dart';
+import 'advertForm.dart';
 
 // LoginPage
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  final VoidCallback? onLoginSuccess;
+
+  const LoginPage({super.key, this.onLoginSuccess});
 
   static final String id = 'LoginPage';
 
@@ -38,8 +41,8 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             body: orientation == Orientation.portrait
-                ? const LoginPortrait()
-                : const LoginLandscape(),
+                ? LoginPortrait(onLoginSuccess: onLoginSuccess)
+                : LoginLandscape(onLoginSuccess: onLoginSuccess),
           ),
         );
       },
@@ -49,7 +52,7 @@ class LoginPage extends StatelessWidget {
 
 // LoginPortrait widget
 class LoginPortrait extends StatelessWidget {
-  const LoginPortrait({super.key});
+  const LoginPortrait({super.key, VoidCallback? onLoginSuccess});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +96,7 @@ class LoginPortrait extends StatelessWidget {
 
 // LoginLandscape widget
 class LoginLandscape extends StatelessWidget {
-  const LoginLandscape({super.key});
+  const LoginLandscape({super.key, VoidCallback? onLoginSuccess});
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +142,9 @@ class LoginLandscape extends StatelessWidget {
 
 //LoginForm
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  final VoidCallback? onLoginSuccess;
+
+  const LoginForm({super.key, this.onLoginSuccess});
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -163,10 +168,15 @@ class _LoginFormState extends State<LoginForm> {
           await Auth.login(_emailController.text, _passwordController.text);
       Provider.of<AuthProvider>(context, listen: false).setUser(user);
 
-      if (user.role == 'admin') {
-        Navigator.pushNamed(context, AdminDashboard.id);
+      if (widget.onLoginSuccess != null) {
+        widget.onLoginSuccess!();
+        Navigator.pushNamed(context, CreateAdvertForm.id);
       } else {
-        Navigator.pushNamed(context, UserDashoard.id);
+        if (user.role == 'admin') {
+          Navigator.pushNamed(context, AdminDashboard.id);
+        } else {
+          Navigator.pushNamed(context, UserDashoard.id);
+        }
       }
     } catch (e) {
       setError(e.toString());

@@ -44,7 +44,7 @@ class Advert {
     this.listing,
   });
 
-  // Convert JSON object to Listing object
+  // Convert JSON object to advert object
   factory Advert.fromJson(Map<String, dynamic> json) {
     return Advert(
       id: json['id'] ?? 0,
@@ -78,7 +78,7 @@ class Advert {
     );
   }
 
-  // Convert Listing object to JSON object
+  // Convert advert object to JSON object
   Map<String, dynamic> toJson() {
     return {
       'id': id,

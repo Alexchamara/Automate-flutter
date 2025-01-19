@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 
+import '../../controllers/listing_controller.dart';
 import '../../models/advert.dart';
+import '../../screens/dashboards/userdashboard/myAds.dart';
 
 class AdvertDetailPage extends StatelessWidget {
   final Listing listing;
   final Advert advert;
 
-  const AdvertDetailPage({required this.listing, Key? key, required this.advert}) : super(key: key);
+  const AdvertDetailPage(
+      {required this.listing, Key? key, required this.advert})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +65,8 @@ class ProductPortrait extends StatelessWidget {
   final Listing listing;
   final Advert advert;
 
-  const ProductPortrait({required this.listing, super.key, required this.advert});
+  const ProductPortrait(
+      {required this.listing, super.key, required this.advert});
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +90,7 @@ class ProductPortrait extends StatelessWidget {
           children: [
             Expanded(
               child: MaterialButton(
-                onPressed: () {},
+                onPressed: () => _confirmDelete(context),
                 color: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: const Text(
@@ -97,25 +102,55 @@ class ProductPortrait extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: MaterialButton(
-                onPressed: () {},
-                color: Colors.green,
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: const Text(
-                  'Deactive Advert',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-            ),
+            // const SizedBox(width: 10),
+            // Expanded(
+            //   child: MaterialButton(
+            //     onPressed: () {},
+            //     color: Colors.green,
+            //     padding: const EdgeInsets.symmetric(vertical: 10.0),
+            //     child: const Text(
+            //       'Deactive Advert',
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 18.0,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
     ));
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: const Text('Are you sure you want to delete this advert?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await ListingController.deleteListing(listing.id);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyAdsPage()),
+                );
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -124,7 +159,8 @@ class ProductLandscape extends StatelessWidget {
   final Listing listing;
   final Advert advert;
 
-  const ProductLandscape({required this.listing, super.key, required this.advert});
+  const ProductLandscape(
+      {required this.listing, super.key, required this.advert});
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +267,8 @@ class ProductDetails extends StatelessWidget {
   final Listing listing;
   final Advert advert;
 
-  const ProductDetails({required this.listing, super.key, required this.advert});
+  const ProductDetails(
+      {required this.listing, super.key, required this.advert});
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +343,8 @@ class ProductDetails extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Contact Details
-          _sectionTitleWithIcon(context, 'Seller Details', Icons.contact_phone, Colors.red),
+          _sectionTitleWithIcon(
+              context, 'Seller Details', Icons.contact_phone, Colors.red),
           Text(
             '• Phone: ${advert.phone}'
             '\n• Email: ${advert.email}'
@@ -321,7 +359,8 @@ class ProductDetails extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Product Description
-          _sectionTitleWithIcon(context, 'Description', Icons.description, Colors.red),
+          _sectionTitleWithIcon(
+              context, 'Description', Icons.description, Colors.red),
           Text(
             advert.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -335,13 +374,13 @@ class ProductDetails extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Product Features
-          _sectionTitleWithIcon(context, 'Advert Details', Icons.details, Colors.red),
+          _sectionTitleWithIcon(
+              context, 'Advert Details', Icons.details, Colors.red),
           Text(
             '• Advert Status: ${listing.isActive}'
             '\n• Advert ID: ${listing.id}'
-            // '\n• Created At: ${formatter.format(listing.createdAt)}'
-            // '\n• Updated At: ${formatter.format(listing.updatedAt)}'
-            ,
+            '\n• Created At: ${listing.createdAt != null ? formatter.format(listing.createdAt!) : 'N/A'}'
+            '\n• Updated At: ${listing.updatedAt != null ? formatter.format(listing.updatedAt!) : 'N/A'}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -352,10 +391,10 @@ class ProductDetails extends StatelessWidget {
           const SizedBox(height: 20),
 
           //User Details
-          _sectionTitleWithIcon(context, 'User Details', Icons.person, Colors.red),
+          _sectionTitleWithIcon(
+              context, 'User Details', Icons.person, Colors.red),
           Text(
             '• User ID: ${listing.userId}'
-            // '\n• Token: ${listing.token}'
             '\n• Status: ${listing.status}'
             '\n• Status Updated At: ${formatter.format(listing.statusUpdatedAt)}'
             '\n• Payment Status: ${listing.paymentStatus}'

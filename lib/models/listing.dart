@@ -12,6 +12,8 @@ class Listing {
   bool isActive;
   final String paymentStatus;
   final DateTime? paymentStatusUpdatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   final User user;
   final Advert advert;
 
@@ -24,10 +26,13 @@ class Listing {
     required this.isActive,
     required this.paymentStatus,
     this.paymentStatusUpdatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.user,
     required this.advert,
   });
 
+  //Convert JSON object to Listing object
   factory Listing.fromJson(Map<String, dynamic> json) {
     return Listing(
       id: json['id'] ?? 0,
@@ -42,11 +47,14 @@ class Listing {
       paymentStatusUpdatedAt: json['payment_status_updated_at'] != null
           ? DateTime.parse(json['payment_status_updated_at'])
           : null,
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
+      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
       user: User.fromJson(json['user'] ?? {}),
       advert: Advert.fromJson(json['advert'] ?? {}),
     );
   }
 
+  //Convert Listing object to JSON object
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -57,6 +65,8 @@ class Listing {
       'isActive': isActive,
       'payment_status': paymentStatus,
       'payment_status_updated_at': paymentStatusUpdatedAt?.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
       'user': user.toJson(),
       'advert': advert.toJson(),
     };

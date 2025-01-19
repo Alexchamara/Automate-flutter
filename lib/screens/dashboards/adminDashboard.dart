@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../layout.dart';
 import '../../providers/authProvider.dart';
 import '../login.dart';
 
@@ -22,7 +23,7 @@ class AdminDashboard extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamed(context, Layout.id);
           },
         ),
       ),

@@ -127,28 +127,65 @@ class _LayoutState extends State<Layout> {
               // FloatingActionButton
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          const CreateAdvertForm(),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        const begin = 0.0;
-                        const end = 1.0;
-                        const curve = Curves.ease;
+                  final authProvider =
+                      Provider.of<AuthProvider>(context, listen: false);
+                  if (authProvider.authenticated()) {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const CreateAdvertForm(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = 0.0;
+                          const end = 1.0;
+                          const curve = Curves.ease;
 
-                        var tween = Tween(begin: begin, end: end)
-                            .chain(CurveTween(curve: curve));
-                        var scaleAnimation = animation.drive(tween);
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          var scaleAnimation = animation.drive(tween);
 
-                        return ScaleTransition(
-                          scale: scaleAnimation,
-                          child: child,
-                        );
-                      },
-                    ),
-                  );
+                          return ScaleTransition(
+                            scale: scaleAnimation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(
+                          onLoginSuccess: () {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        const CreateAdvertForm(),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = 0.0;
+                                  const end = 1.0;
+                                  const curve = Curves.ease;
+
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var scaleAnimation = animation.drive(tween);
+
+                                  return ScaleTransition(
+                                    scale: scaleAnimation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  }
                 },
                 backgroundColor: Theme.of(context).primaryColor,
                 elevation: 6.0,

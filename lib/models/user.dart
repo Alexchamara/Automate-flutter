@@ -17,6 +17,7 @@ class User {
     this.listings = const [],
   });
 
+  //Convert JSON object to user object
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] ?? 0,
@@ -31,6 +32,7 @@ class User {
     );
   }
 
+  //Convert user object to JSON object
   Map<String, dynamic> toJson() {
     return {
       'id': id,

@@ -106,7 +106,8 @@ class Auth {
   }
 
   //register function
-  static Future<User> register(String name, String email, String password, String confirmPassword) async {
+  static Future<User> register(String name, String email, String password,
+      String confirmPassword) async {
     var response = await http.post(
       Uri.parse('$app_url/api/register'),
       headers: {
@@ -136,4 +137,35 @@ class Auth {
       throw ("Registration failed with status: ${response.statusCode}");
     }
   }
-}
+
+  //update password function
+static Future<void> updatePassword(String currentPassword, String newPassword, String confirmPassword) async {
+  const storage = FlutterSecureStorage();
+  String? token = await storage.read(key: "auth_token");
+
+  if (token == null) {
+    throw Exception("No auth token found");
+  }
+
+  var response = await http.put(
+    Uri.parse('${Config.APP_URL}/api/update/password'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode({
+      'current_password': currentPassword,
+      'password': newPassword,
+      'password_confirmation': confirmPassword,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    print("Password updated successfully");
+  } else {
+    print("Password update failed with status: ${response.statusCode}");
+    print("Response body: ${response.body}");
+    throw Exception("Password update failed with status: ${response.statusCode}");
+  }
+}}

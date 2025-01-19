@@ -110,6 +110,29 @@ class ListingController {
       print("Exception: $e");
     }
   }
+
+  // Delete an advert
+  static Future<void> deleteListing(int listingId) async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/listings/destroy/$listingId');
+      final response = await http.delete(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("Listing deleted successfully!");
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+  }
 }
 
 // class ListingController {
