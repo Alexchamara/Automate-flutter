@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/advert.dart';
+
 class AdvertDetailPage extends StatelessWidget {
   final Listing listing;
+  final Advert advert;
 
-  const AdvertDetailPage({required this.listing, Key? key}) : super(key: key);
+  const AdvertDetailPage({required this.listing, Key? key, required this.advert}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +47,8 @@ class AdvertDetailPage extends StatelessWidget {
 
             // Body
             body: orientation == Orientation.portrait
-                ? ProductPortrait(listing: listing)
-                : ProductLandscape(listing: listing),
+                ? ProductPortrait(listing: listing, advert: advert)
+                : ProductLandscape(listing: listing, advert: advert),
           ),
         );
       },
@@ -56,8 +59,9 @@ class AdvertDetailPage extends StatelessWidget {
 //ProductPortrait widget
 class ProductPortrait extends StatelessWidget {
   final Listing listing;
+  final Advert advert;
 
-  const ProductPortrait({required this.listing, super.key});
+  const ProductPortrait({required this.listing, super.key, required this.advert});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +72,7 @@ class ProductPortrait extends StatelessWidget {
           children: [
             ImageSlider(height: 275, fitSize: StackFit.expand),
             SizedBox(height: 20),
-            ProductDetails(listing: listing),
+            ProductDetails(listing: listing, advert: advert),
             // Bottom Navigation Bar
           ],
         ),
@@ -118,8 +122,9 @@ class ProductPortrait extends StatelessWidget {
 //ProductLandscape widget
 class ProductLandscape extends StatelessWidget {
   final Listing listing;
+  final Advert advert;
 
-  const ProductLandscape({required this.listing, super.key});
+  const ProductLandscape({required this.listing, super.key, required this.advert});
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +135,7 @@ class ProductLandscape extends StatelessWidget {
           children: [
             ImageSlider(height: 300, fitSize: StackFit.expand),
             SizedBox(height: 20),
-            ProductDetails(listing: listing),
+            ProductDetails(listing: listing, advert: advert),
           ],
         ),
       ),
@@ -224,8 +229,9 @@ class _ImageSliderState extends State<ImageSlider> {
 //ProductDetails widget
 class ProductDetails extends StatelessWidget {
   final Listing listing;
+  final Advert advert;
 
-  const ProductDetails({required this.listing, super.key});
+  const ProductDetails({required this.listing, super.key, required this.advert});
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +247,7 @@ class ProductDetails extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                listing.brand,
+                advert.brand,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: 24.0,
@@ -252,7 +258,7 @@ class ProductDetails extends StatelessWidget {
                   const Icon(Icons.location_on, color: Colors.red, size: 24),
                   const SizedBox(width: 4),
                   Text(
-                    listing.location,
+                    advert.location,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 16.0,
@@ -267,7 +273,7 @@ class ProductDetails extends StatelessWidget {
 
           // Product Price
           Text(
-            'Rs.${listing.price.toString()}',
+            'Rs.${advert.price.toString()}',
             style: const TextStyle(
               color: Colors.red,
               fontSize: 22.0,
@@ -281,15 +287,15 @@ class ProductDetails extends StatelessWidget {
           _sectionTitleWithIcon(
               context, 'Car Specifications', Icons.rate_review, Colors.red),
           Text(
-            '• Condition: ${listing.condition}'
-            '\n• Fuel: ${listing.fuelType}'
-            '\n• Engine: ${listing.engine}'
-            '\n• Transmission: ${listing.gearBox}'
-            '\n• Year: ${listing.year}'
-            '\n• Mileage: ${listing.mileage} km'
-            '\n• Color: ${listing.color}'
-            '\n• Body Type: ${listing.bodyType}'
-            '\n• Location: ${listing.location}',
+            '• Condition: ${advert.condition}'
+            '\n• Fuel: ${advert.fuelType}'
+            '\n• Engine: ${advert.engine}'
+            '\n• Transmission: ${advert.gearBox}'
+            '\n• Year: ${advert.year}'
+            '\n• Mileage: ${advert.mileage} km'
+            '\n• Color: ${advert.color}'
+            '\n• Body Type: ${advert.bodyType}'
+            '\n• Location: ${advert.location}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -302,9 +308,9 @@ class ProductDetails extends StatelessWidget {
           // Contact Details
           _sectionTitleWithIcon(context, 'Seller Details', Icons.contact_phone, Colors.red),
           Text(
-            '• Phone: ${listing.phone}'
-            '\n• Email: ${listing.email}'
-            '\n• Location: ${listing.location}',
+            '• Phone: ${advert.phone}'
+            '\n• Email: ${advert.email}'
+            '\n• Location: ${advert.location}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -317,7 +323,7 @@ class ProductDetails extends StatelessWidget {
           // Product Description
           _sectionTitleWithIcon(context, 'Description', Icons.description, Colors.red),
           Text(
-            listing.description,
+            advert.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -333,8 +339,9 @@ class ProductDetails extends StatelessWidget {
           Text(
             '• Advert Status: ${listing.isActive}'
             '\n• Advert ID: ${listing.id}'
-            '\n• Created At: ${formatter.format(listing.createdAt)}'
-            '\n• Updated At: ${formatter.format(listing.updatedAt)}',
+            // '\n• Created At: ${formatter.format(listing.createdAt)}'
+            // '\n• Updated At: ${formatter.format(listing.updatedAt)}'
+            ,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -348,7 +355,7 @@ class ProductDetails extends StatelessWidget {
           _sectionTitleWithIcon(context, 'User Details', Icons.person, Colors.red),
           Text(
             '• User ID: ${listing.userId}'
-            '\n• Token: ${listing.token}'
+            // '\n• Token: ${listing.token}'
             '\n• Status: ${listing.status}'
             '\n• Status Updated At: ${formatter.format(listing.statusUpdatedAt)}'
             '\n• Payment Status: ${listing.paymentStatus}'

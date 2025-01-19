@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/advert.dart';
 import '../screens/login.dart';
 import '../services/auth_service.dart';
 import '../models/listing.dart';
@@ -9,24 +12,24 @@ import 'package:http/http.dart' as http;
 
 class ListingController {
   //Create a new listing
-  static Future<void> createListing(
-      BuildContext context, Listing listing) async {
+  static Future<void> createListing(BuildContext context, Advert advert) async {
     try {
       final uri = Uri.parse('${Config.APP_URL}/api/listings/store');
       final request = http.MultipartRequest('POST', uri)
         ..headers['Content-Type'] = 'application/json'
         ..headers['Accept'] = 'application/json'
         ..headers['Authorization'] = 'Bearer ${AuthService.instance.token}'
-        ..fields.addAll(listing
+        ..fields.addAll(advert
             .toJson()
             .map((key, value) => MapEntry(key, value.toString())));
 
       // Attach image files
-      if (listing.images != null) {
-        for (var imageFile in listing.images!) {
+      if (advert.images != null) {
+        for (var imageFile in advert.images!) {
+          final file = File(imageFile);
           request.files.add(await http.MultipartFile.fromPath(
             'images[]', // Match this name with the backend field
-            imageFile.path,
+            file.path,
           ));
         }
       }
@@ -65,7 +68,7 @@ class ListingController {
             jsonResponse.containsKey('data')) {
           List<dynamic> listingsJson = jsonResponse['data'];
           return listingsJson
-              .map((data) => Listing.fromJson(data['advert']))
+              .map((data) => Listing.fromJson(data))
               .toList();
         } else {
           throw Exception("Unexpected response format");
@@ -83,7 +86,8 @@ class ListingController {
   // Update the status of an advert
   static Future<void> updateAdvertStatus(int advertId, bool isActive) async {
     try {
-      final uri = Uri.parse('${Config.APP_URL}/api/listings/$advertId/toggle-status');
+      final uri =
+          Uri.parse('${Config.APP_URL}/api/listings/$advertId/toggle-status');
       final response = await http.patch(
         uri,
         headers: {
@@ -107,8 +111,6 @@ class ListingController {
     }
   }
 }
-
-
 
 // class ListingController {
 //   static const String app_url = Config.APP_URL;

@@ -1,3 +1,4 @@
+import 'package:automate/models/advert.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../controllers/listing_controller.dart';
-import '../models/listing.dart';
+import '../models/advert.dart';
 import 'login.dart';
 
 class CreateAdvertForm extends StatefulWidget {
@@ -72,17 +73,17 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
         return;
       }
 
-      final listing = Listing(
+      final advert = Advert(
         id: 0,
-        advertId: 0,
-        status: '',
-        statusUpdatedAt: DateTime.now(),
-        isActive: true,
-        paymentStatus: '',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        userId: authProvider.getUser().id,
-        token: '',
+        // advertId: 0,
+        // status: '',
+        // statusUpdatedAt: DateTime.now(),
+        // isActive: true,
+        // paymentStatus: '',
+        // createdAt: DateTime.now(),
+        // updatedAt: DateTime.now(),
+        // userId: authProvider.getUser().id,
+        // token: '',
         brand: _selectedBrand!,
         model: _selectedModel!,
         year: _selectedYear!,
@@ -98,11 +99,11 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
         phone: _phoneController.text,
         email: _emailController.text,
         location: _locationController.text,
-        images: _uploadedImages,
+        images: _uploadedImages.map((file) => file.path).toList(),
       );
 
       try {
-        await ListingController.createListing(context, listing);
+        await ListingController.createListing(context, advert);
         setState(() {
           _validationMessage = null; // Clear validation message on success
         });

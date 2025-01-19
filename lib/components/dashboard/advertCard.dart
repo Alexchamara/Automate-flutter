@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:automate/models/listing.dart';
 import '../../controllers/listing_controller.dart';
+import '../../models/advert.dart';
 import 'advertDetailPage.dart';
 
 class AdvertCard extends StatefulWidget {
   final Listing listing;
+  final Advert advert;
 
-  const AdvertCard({required this.listing, Key? key}) : super(key: key);
+  const AdvertCard({required this.listing, Key? key, required this.advert}) : super(key: key);
 
   @override
   State<AdvertCard> createState() => _AdvertCardState();
@@ -24,10 +26,10 @@ class _AdvertCardState extends State<AdvertCard> {
   void toggleAdvertStatus() async {
     setState(() {
       isActive = !isActive;
+      widget.listing.isActive = isActive;
     });
 
-    await ListingController.updateAdvertStatus(
-        widget.listing.advertId, isActive);
+    await ListingController.updateAdvertStatus(widget.listing.advertId, isActive);
   }
 
   @override
@@ -44,16 +46,16 @@ class _AdvertCardState extends State<AdvertCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.listing.brand,
+                Text(widget.advert.brand,
                     style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 5.0),
-                Text('Price: Rs.${widget.listing.price}',
+                Text('Price: Rs.${widget.advert.price}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 5.0),
-                Text('Location: ${widget.listing.location}',
+                Text('Location: ${widget.advert.location}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 5.0),
-                Text('Status: ${widget.listing.isActive}',
+                Text('Status: ${widget.listing.isActive ? "Active" : "Inactive"}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 10.0),
                 Row(
@@ -65,7 +67,7 @@ class _AdvertCardState extends State<AdvertCard> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                AdvertDetailPage(listing: widget.listing),
+                                AdvertDetailPage(listing: widget.listing, advert: widget.advert),
                           ),
                         );
                       },

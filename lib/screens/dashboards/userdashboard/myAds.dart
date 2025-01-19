@@ -33,7 +33,7 @@ class MyAdsPage extends StatelessWidget {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return AdvertCard(listing: snapshot.data![index]);
+                return AdvertCard(listing: snapshot.data![index], advert: snapshot.data![index].advert);
               },
             );
           }
