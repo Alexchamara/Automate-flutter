@@ -4,6 +4,7 @@ class User {
   final int id;
   final String name;
   final String email;
+  final String mobile;
   final String token;
   final String role;
   final List<Listing> listings;
@@ -12,6 +13,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
+    required this.mobile,
     this.token = '',
     this.role = '',
     this.listings = const [],
@@ -23,6 +25,7 @@ class User {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       email: json['email'] ?? '',
+      mobile: json['mobile'] ?? '',
       token: json['token'] ?? '',
       role: json['role'] ?? '',
       listings: (json['listings'] as List<dynamic>?)
@@ -38,6 +41,7 @@ class User {
       'id': id,
       'name': name,
       'email': email,
+      'mobile': mobile,
       'token': token,
       'role': role,
       'listings': listings.map((listing) => listing.toJson()).toList(),

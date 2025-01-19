@@ -6,7 +6,7 @@ import '../controllers/auth_controller.dart';
 import '../services/auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  User _user = User(id: 0, name: '', email: '', token: '', role: '');
+  User _user = User(id: 0, name: '', email: '', mobile: '', token: '', role: '');
 
   bool _isAuthenticated = false;
   String _token = "";
@@ -19,12 +19,14 @@ class AuthProvider with ChangeNotifier {
     const storage = FlutterSecureStorage();
     String? name = await storage.read(key: "name");
     String? email = await storage.read(key: "email");
+    String? mobile = await storage.read(key: "mobile");
     String? token = await storage.read(key: "auth_token");
     String? role = await storage.read(key: "role");
     _user = User(
         id: 0,
         name: name ?? '',
         email: email ?? '',
+        mobile: mobile ?? '',
         token: token ?? '',
         role: role ?? '');
     notifyListeners();
@@ -41,6 +43,7 @@ class AuthProvider with ChangeNotifier {
       id: _user.id,
       name: _user.name,
       email: _user.email,
+      mobile: _user.mobile,
       token: token,
       role: _user.role,
     );
@@ -59,7 +62,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> logOut() async {
     try {
       await Auth.logout();
-      _user = User(id: 0, name: '', email: '', token: '', role: '');
+      _user = User(id: 0, name: '', email: '', mobile: '', token: '', role: '');
       notifyListeners();
     } catch (e) {
       print(e);

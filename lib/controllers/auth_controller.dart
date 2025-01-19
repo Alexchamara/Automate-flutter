@@ -42,6 +42,7 @@ class Auth {
         id: user["id"],
         name: user["name"],
         email: user["email"],
+        mobile: user["mobile"],
         token: jsonResponse["token"],
         role: user["role"],
       );
@@ -106,8 +107,7 @@ class Auth {
   }
 
   //register function
-  static Future<User> register(String name, String email, String password,
-      String confirmPassword) async {
+  static Future<User> register(String name, String email, String password, String confirmPassword) async {
     var response = await http.post(
       Uri.parse('$app_url/api/register'),
       headers: {
@@ -139,33 +139,67 @@ class Auth {
   }
 
   //update password function
-static Future<void> updatePassword(String currentPassword, String newPassword, String confirmPassword) async {
-  const storage = FlutterSecureStorage();
-  String? token = await storage.read(key: "auth_token");
+  static Future<void> updatePassword(String currentPassword, String newPassword, String confirmPassword) async {
+    const storage = FlutterSecureStorage();
+    String? token = await storage.read(key: "auth_token");
 
-  if (token == null) {
-    throw Exception("No auth token found");
+    if (token == null) {
+      throw Exception("No auth token found");
+    }
+
+    var response = await http.put(
+      Uri.parse('${Config.APP_URL}/api/update/password'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'current_password': currentPassword,
+        'password': newPassword,
+        'password_confirmation': confirmPassword,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print("Password updated successfully");
+    } else {
+      print("Password update failed with status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+      throw Exception(
+          "Password update failed with status: ${response.statusCode}");
+    }
   }
 
-  var response = await http.put(
-    Uri.parse('${Config.APP_URL}/api/update/password'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-    body: jsonEncode({
-      'current_password': currentPassword,
-      'password': newPassword,
-      'password_confirmation': confirmPassword,
-    }),
-  );
+  //update user details function
+  static Future<void> updateUserDetails(String name, String email, String mobile) async {
+    const storage = FlutterSecureStorage();
+    String? token = await storage.read(key: "auth_token");
 
-  if (response.statusCode == 200) {
-    print("Password updated successfully");
-  } else {
-    print("Password update failed with status: ${response.statusCode}");
-    print("Response body: ${response.body}");
-    throw Exception("Password update failed with status: ${response.statusCode}");
+    if (token == null) {
+      throw Exception("No auth token found");
+    }
+
+    var response = await http.put(
+      Uri.parse('$app_url/api/profile/update'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'name': name,
+        'email': email,
+        'mobile': mobile,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print("User details updated successfully");
+    } else {
+      print("User details update failed with status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+      throw Exception("User details update failed with status: ${response.statusCode}");
+    }
   }
-}}
+}
