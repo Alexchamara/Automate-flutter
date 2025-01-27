@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,8 +12,16 @@ import '../config.dart';
 import 'package:http/http.dart' as http;
 
 class ListingController {
+  static final StreamController<String> _statusController = StreamController<String>.broadcast();
+
+  static Stream<String> get statusStream => _statusController.stream;
+
+  static void updateStatus(String status) {
+    _statusController.add(status);
+  }
+
   //Create a new listing
-  static Future<void> createListing(BuildContext context, Advert advert) async {
+  static Future<Map<String, dynamic>> createListing(BuildContext context, Advert advert) async {
     try {
       final uri = Uri.parse('${Config.APP_URL}/api/listings/store');
       final request = http.MultipartRequest('POST', uri)
@@ -36,14 +45,17 @@ class ListingController {
 
       final response = await request.send();
 
-      if (response.statusCode == 201) {
-        print("Listing created successfully!");
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+        return jsonDecode(responseBody);
       } else {
         final responseBody = await response.stream.bytesToString();
         print("Error: ${response.statusCode} - $responseBody");
+        throw Exception('Failed to create listing');
       }
     } catch (e) {
       print("Exception: $e");
+      throw Exception('Failed to create listing');
     }
   }
 
@@ -67,9 +79,7 @@ class ListingController {
         if (jsonResponse is Map<String, dynamic> &&
             jsonResponse.containsKey('data')) {
           List<dynamic> listingsJson = jsonResponse['data'];
-          return listingsJson
-              .map((data) => Listing.fromJson(data))
-              .toList();
+          return listingsJson.map((data) => Listing.fromJson(data)).toList();
         } else {
           throw Exception("Unexpected response format");
         }
@@ -114,7 +124,8 @@ class ListingController {
   // Delete an advert
   static Future<void> deleteListing(int listingId) async {
     try {
-      final uri = Uri.parse('${Config.APP_URL}/api/listings/destroy/$listingId');
+      final uri =
+          Uri.parse('${Config.APP_URL}/api/listings/destroy/$listingId');
       final response = await http.delete(
         uri,
         headers: {

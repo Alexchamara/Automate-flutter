@@ -33,18 +33,18 @@ class Auth {
     if (response.statusCode == 200) {
       const storage = FlutterSecureStorage();
       var user = jsonResponse["user"];
-      await storage.write(key: "name", value: user["name"]);
-      await storage.write(key: "email", value: user["email"]);
-      await storage.write(key: "auth_token", value: jsonResponse["token"]);
-      await storage.write(key: "role", value: user["role"]);
-      AuthService.instance.setToken(jsonResponse["token"]);
+      await storage.write(key: "name", value: user["name"] ?? '');
+      await storage.write(key: "email", value: user["email"] ?? '');
+      await storage.write(key: "auth_token", value: jsonResponse["token"] ?? '');
+      await storage.write(key: "role", value: user["role"] ?? '');
+      AuthService.instance.setToken(jsonResponse["token"] ?? '');
       return User(
-        id: user["id"],
-        name: user["name"],
-        email: user["email"],
-        mobile: user["mobile"],
-        token: jsonResponse["token"],
-        role: user["role"],
+        id: user["id"] ?? 0,
+        name: user["name"] ?? '',
+        email: user["email"] ?? '',
+        mobile: user["mobile"] ?? '',
+        token: jsonResponse["token"] ?? '',
+        role: user["role"] ?? '',
       );
     }
 

@@ -1,8 +1,23 @@
+import 'package:automate/controllers/admin_controller.dart';
+import 'package:automate/models/listing.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
+
+import '../../controllers/listing_controller.dart';
+import '../../models/advert.dart';
+import '../../models/user.dart';
 
 class AdvertDetails extends StatelessWidget {
-  const AdvertDetails({super.key});
+  final Listing listing;
+  final Advert advert;
+  final User user;
+
+  const AdvertDetails(
+      {super.key,
+      required this.listing,
+      required this.advert,
+      required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +27,8 @@ class AdvertDetails extends StatelessWidget {
           child: Scaffold(
             // App Bar
             appBar: AppBar(
-              title: const Text('Details',
-                  style: TextStyle(
+              title: Text(advert.brand,
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold)),
@@ -24,62 +39,158 @@ class AdvertDetails extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              actions: [
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.share, color: Colors.white)),
-                IconButton(
-                  icon: const Icon(Icons.star_border_outlined),
-                  color: Colors.white,
-                  onPressed: () {
-                    // Navigator.pushNamed(context, SearchPage.id);
-                  },
-                ),
-              ],
             ),
 
             // Body
             body: orientation == Orientation.portrait
-                ? const ProductPortrait()
-                : const ProductLandscape(),
+                ? ProductPortrait(listing: listing, advert: advert, user: user)
+                : ProductLandscape(
+                    listing: listing, advert: advert, user: user),
           ),
         );
       },
     );
   }
+
+  static void showConfirmationDialog(BuildContext context, String title,
+      String content, VoidCallback onConfirm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                onConfirm();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static void showSuccessMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
 }
 
 //ProductPortrait widget
-class ProductPortrait extends StatelessWidget {
-  const ProductPortrait({super.key});
+class ProductPortrait extends StatefulWidget {
+  final Listing listing;
+  final Advert advert;
+  final User user;
+
+  const ProductPortrait(
+      {super.key,
+      required this.listing,
+      required this.advert,
+      required this.user});
+
+  @override
+  State<ProductPortrait> createState() => _ProductPortraitState();
+}
+
+class _ProductPortraitState extends State<ProductPortrait> {
+  late bool isActive;
+  bool isApproved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isActive = widget.listing.isActive;
+    isApproved = widget.listing.status == 'approved';
+  }
+
+  void toggleAdvertStatus() async {
+    AdvertDetails.showConfirmationDialog(
+      context,
+      'Toggle Active Status',
+      'Are you sure you want to change the active status?',
+      () async {
+        setState(() {
+          isActive = isActive;
+          widget.listing.isActive = isActive;
+        });
+
+        await ListingController.updateAdvertStatus(widget.listing.advertId, isActive);
+        AdvertDetails.showSuccessMessage(
+            context, 'Advert status updated successfully!');
+      },
+    );
+  }
+
+  void approveAdvert() async {
+    AdvertDetails.showConfirmationDialog(
+      context,
+      'Approve Advert',
+      'Are you sure you want to approve this advert?',
+      () async {
+        await AdminController.updateAdvertActive(widget.listing.id, true);
+        setState(() {
+          isApproved = true;
+        });
+        AdvertDetails.showSuccessMessage(
+            context, 'Advert approved successfully!');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-          body: const SingleChildScrollView(
-            child: Column(
-              children: [
-                ImageSlider(height: 275, fitSize: StackFit.expand),
-                SizedBox(height: 20),
-                ProductDetails(),
-                // Bottom Navigation Bar
-              ],
-            ),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const ImageSlider(height: 275, fitSize: StackFit.expand),
+              const SizedBox(height: 20),
+              ProductDetails(
+                  listing: widget.listing,
+                  advert: widget.advert,
+                  user: widget.user),
+            ],
           ),
-          // Bottom Navigation Bar
-          bottomNavigationBar: BottomAppBar(
-            color: Colors.transparent,
-            height: 70,
-            child: Row(
-              children: [
+        ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.transparent,
+          height: 70,
+          child: Row(
+            children: [
+              if (!isApproved) ...[
                 Expanded(
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      AdvertDetails.showConfirmationDialog(
+                        context,
+                        'Reject Advert',
+                        'Are you sure you want to reject this advert?',
+                        () async {
+                          await AdminController.updateAdvertActive(widget.listing.id, false);
+                          AdvertDetails.showSuccessMessage(
+                              context, 'Advert rejected successfully!');
+                        },
+                      );
+                    },
                     color: Theme.of(context).primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: const Text(
-                      'Delete Advert',
+                      'Reject Advert',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
@@ -90,11 +201,11 @@ class ProductPortrait extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: approveAdvert,
                     color: Colors.green,
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: const Text(
-                      'Deactive Advert',
+                      'Approve Advert',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
@@ -103,30 +214,59 @@ class ProductPortrait extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+              if (isApproved) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Advert Status:',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(width: 8),
+                    Switch(
+                      value: isActive,
+                      onChanged: (value) {
+                        toggleAdvertStatus();
+                      },
+                      activeColor: Colors.green,
+                      inactiveThumbColor: Colors.red,
+                    ),
+                  ],
+                ),
+              ],
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
-
 //ProductLandscape widget
 class ProductLandscape extends StatelessWidget {
-  const ProductLandscape({super.key});
+  final Listing listing;
+  final Advert advert;
+  final User user;
+
+  const ProductLandscape(
+      {super.key,
+      required this.listing,
+      required this.advert,
+      required this.user});
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
         child: Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                ImageSlider(height: 300, fitSize: StackFit.expand),
-                SizedBox(height: 20),
-                ProductDetails(),
-              ],
-            ),
-          ),
-        ));
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ImageSlider(height: 300, fitSize: StackFit.expand),
+            SizedBox(height: 20),
+            ProductDetails(listing: listing, advert: advert, user: user),
+          ],
+        ),
+      ),
+    ));
   }
 }
 
@@ -215,30 +355,58 @@ class _ImageSliderState extends State<ImageSlider> {
 
 //ProductDetails widget
 class ProductDetails extends StatelessWidget {
-  const ProductDetails({super.key});
+  final Listing listing;
+  final Advert advert;
+  final User user;
+
+  const ProductDetails(
+      {super.key,
+      required this.listing,
+      required this.advert,
+      required this.user});
 
   @override
   Widget build(BuildContext context) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Product Name Section
-          Text(
-            'Mercedes-Benz A Class',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 24.0,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                advert.brand,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24.0,
+                    ),
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.location_on, color: Colors.red, size: 24),
+                  const SizedBox(width: 4),
+                  Text(
+                    advert.location,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.0,
+                        ),
+                  ),
+                ],
+              )
+            ],
           ),
 
           const SizedBox(height: 10),
 
           // Product Price
-          const Text(
-            'Rs. 26,000,000',
-            style: TextStyle(
+          Text(
+            'Rs.${advert.price.toString()}',
+            style: const TextStyle(
               color: Colors.red,
               fontSize: 22.0,
               fontWeight: FontWeight.bold,
@@ -247,43 +415,76 @@ class ProductDetails extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Product Features
-          _sectionTitleWithIcon(context, 'Car Features', Icons.star),
-          Text(
-            '�� Air Conditioning\n• Airbags\n• Alarm System\n• Alloy Wheels\n• Bluetooth Interface\n• CD/DVD Autochanger\n• Cruise Control\n• Direct Fuel Injection\n• Electric Parking Brake\n• Wind Deflector',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 14.0,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 20),
-
           // Product Specifications
           _sectionTitleWithIcon(
-              context, 'Product Specifications', Icons.rate_review),
+              context, 'Car Specifications', Icons.rate_review),
           Text(
-            '• Condition: Used\n• Fuel: Petrol\n• Engine: 1.4L\n• Transmission: Automatic\n• Year: 2020\n• Mileage: 10,000 km',
+            '• Condition: ${advert.condition}'
+            '\n• Fuel: ${advert.fuelType}'
+            '\n• Engine: ${advert.engine}'
+            '\n• Transmission: ${advert.gearBox}'
+            '\n• Year: ${advert.year}'
+            '\n• Mileage: ${advert.mileage} km'
+            '\n• Color: ${advert.color}'
+            '\n• Body Type: ${advert.bodyType}'
+            '\n• Location: ${advert.location}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 14.0,
-              height: 1.5,
-            ),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  height: 1.5,
+                ),
           ),
+
           const SizedBox(height: 20),
 
           // Product Description
           _sectionTitleWithIcon(context, 'Description', Icons.description),
           Text(
-            'The CEO of an internationally recognised company drives a Mercedes Benz A180 2020 registered car.',
+            advert.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 14.0,
-              height: 1.5,
-            ),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  height: 1.5,
+                ),
             textAlign: TextAlign.justify,
           ),
+
           const SizedBox(height: 20),
+
+          // Product Features
+          _sectionTitleWithIcon(context, 'Advert Details', Icons.details),
+          Text(
+            '• Advert ID: ${listing.id}'
+            '\n• Advert Active: ${listing.isActive}'
+            '\n• Advert Status: ${listing.status}'
+            '\n• Created At: ${listing.createdAt != null ? formatter.format(listing.createdAt!) : 'N/A'}'
+            '\n• Updated At: ${listing.updatedAt != null ? formatter.format(listing.updatedAt!) : 'N/A'}',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  height: 1.5,
+                ),
+          ),
+
+          const SizedBox(height: 20),
+
+          //User Details
+          _sectionTitleWithIcon(context, 'Seller Details', Icons.person),
+          Text(
+            '• User ID: ${listing.userId}'
+            '\n• User Name: ${user.name}'
+            '\n• User Email: ${user.email}'
+            '\n• User Phone: ${user.mobile}'
+            '\n• Status: ${listing.status}'
+            '\n• Status Updated At: ${formatter.format(listing.statusUpdatedAt)}'
+            '\n• Payment Status: ${listing.paymentStatus}'
+            '\n• Payment Status Updated At: ${listing.paymentStatusUpdatedAt != null ? formatter.format(listing.paymentStatusUpdatedAt!) : 'N/A'}',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  height: 1.5,
+                ),
+          ),
         ],
       ),
     );
@@ -301,9 +502,9 @@ class ProductDetails extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 20.0,
-            ),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20.0,
+                ),
           ),
         ],
       ),

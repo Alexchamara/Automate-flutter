@@ -7,7 +7,7 @@ class Listing {
   final int id;
   final int userId;
   final int advertId;
-  final String status;
+  late final String status;
   final DateTime statusUpdatedAt;
   bool isActive;
   final String paymentStatus;

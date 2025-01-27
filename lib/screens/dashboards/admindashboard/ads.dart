@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import '../../../controllers/admin_controller.dart';
+import '../../../models/listing.dart';
 import '../../../components/adminDashboard/adsCard.dart';
 
 class ManageAdverts extends StatelessWidget {
@@ -21,30 +22,28 @@ class ManageAdverts extends StatelessWidget {
           },
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Manage Adverts',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              'Please fill in the form below to manage advertisements.',
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 20.0),
-            AdvertCard(),
-          ],
-        ),
+      body: FutureBuilder<List<Listing>>(
+        future: AdminController.getAllListings(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No adverts found'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return AdvertCard(
+                    listing: snapshot.data![index],
+                    advert: snapshot.data![index].advert,
+                    user: snapshot.data![index].user
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }

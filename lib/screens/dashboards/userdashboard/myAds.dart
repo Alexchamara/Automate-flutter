@@ -1,3 +1,4 @@
+import 'package:automate/screens/advertForm.dart';
 import 'package:flutter/material.dart';
 import '../../../components/dashboard/advertCard.dart';
 import '../../../controllers/listing_controller.dart';
@@ -28,12 +29,50 @@ class MyAdsPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No ads found.'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.search, size: 80, color: Color(0xFF6C757D)),
+                  const Text(
+                    'No adverts found',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF6C757D),
+                    ),
+                  ),
+                  const Text(
+                    "We couldn't find any records. Try changing search filters",
+                    style: TextStyle(color: Color(0xFF6C757D)),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, CreateAdvertForm.id);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 28, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    child: const Text('Create a new advert',
+                       style: TextStyle(color: Colors.white),),
+                  ),
+                ],
+              ),
+            );
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return AdvertCard(listing: snapshot.data![index], advert: snapshot.data![index].advert);
+                return AdvertCard(
+                    listing: snapshot.data![index],
+                    advert: snapshot.data![index].advert
+                );
               },
             );
           }
