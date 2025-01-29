@@ -28,7 +28,7 @@ class AuthProvider with ChangeNotifier {
         email: email ?? '',
         mobile: mobile ?? '',
         token: token ?? '',
-        role: role ?? '');
+        role: role ?? '',);
     notifyListeners();
   }
 

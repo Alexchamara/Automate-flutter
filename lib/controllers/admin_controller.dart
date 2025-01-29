@@ -5,6 +5,7 @@ import 'dart:io';
 
 import '../config.dart';
 import '../models/listing.dart';
+import '../models/user.dart';
 import '../services/auth_service.dart';
 
 class AdminController {
@@ -90,6 +91,7 @@ class AdminController {
     }
   }
 
+  // Toggle advert active status
   static Future<void> updateAdvertActive(int listingId, bool isApproved) async {
     try {
       final uri = Uri.parse(
@@ -105,6 +107,85 @@ class AdminController {
 
       if (response.statusCode == 200) {
         print("Advert ${isApproved ? 'approved' : 'rejected'} successfully!");
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+  }
+
+  // Fetch all users excluding admins
+  static Future<List<User>> getAllUsersExcludingAdmins() async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/users');
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse is List) {
+          return jsonResponse
+              .map((data) => User.fromJson(data))
+              .where((user) => user.role != 'Admin')
+              .toList();
+        } else {
+          throw Exception("Unexpected response format");
+        }
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return [];
+    }
+  }
+
+  // Activate a user
+  static Future<void> activateUser(int userId) async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/users/$userId/activate');
+      final response = await http.patch(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("User activated successfully!");
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+  }
+
+  // Deactivate a user
+  static Future<void> deactivateUser(int userId) async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/users/$userId/deactivate');
+      final response = await http.patch(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("User deactivated successfully!");
       } else {
         print("Error: ${response.statusCode} - ${response.body}");
       }

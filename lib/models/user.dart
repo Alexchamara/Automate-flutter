@@ -19,7 +19,6 @@ class User {
     this.listings = const [],
   });
 
-  //Convert JSON object to user object
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] ?? 0,
@@ -30,12 +29,10 @@ class User {
       role: json['role'] ?? '',
       listings: (json['listings'] as List<dynamic>?)
           ?.map((listing) => Listing.fromJson(listing))
-          .toList() ??
-          [],
+          .toList() ?? [],
     );
   }
 
-  //Convert user object to JSON object
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -48,7 +45,6 @@ class User {
     };
   }
 }
-
 // class User {
 //   final int id;
 //   final String name;

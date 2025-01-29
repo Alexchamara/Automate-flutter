@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../controllers/admin_controller.dart';
 
 class UserCard extends StatelessWidget {
   final String userId;
@@ -6,10 +7,6 @@ class UserCard extends StatelessWidget {
   final String email;
   final String mobile;
   final String role;
-  final bool isActive;
-  final String createdAt;
-  final VoidCallback onActivate;
-  final VoidCallback onDeactivate;
 
   const UserCard({
     required this.userId,
@@ -17,10 +14,6 @@ class UserCard extends StatelessWidget {
     required this.email,
     required this.mobile,
     required this.role,
-    required this.isActive,
-    required this.createdAt,
-    required this.onActivate,
-    required this.onDeactivate,
     super.key,
   });
 
@@ -48,32 +41,30 @@ class UserCard extends StatelessWidget {
             const SizedBox(height: 8.0),
             Text('Mobile: $mobile'),
             const SizedBox(height: 8.0),
-            Text('Active: ${isActive ? "Yes" : "No"}'),
-            const SizedBox(height: 8.0),
-            Text('Created At: $createdAt'),
-            const SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: onActivate,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                  ),
-                  child: const Text('Activate',
-                      style: TextStyle(color: Colors.white)),
-                ),
-                const SizedBox(width: 8.0),
-                // ElevatedButton(
-                //   onPressed: onDeactivate,
-                //   style: ElevatedButton.styleFrom(
-                //     backgroundColor: Colors.red,
-                //   ),
-                //   child: const Text('Deactivate',
-                //       style: TextStyle(color: Colors.white)),
-                // ),
-              ],
-            ),
+            // Text('Active: ${isActive ? "Yes" : "No"}'),
+            // const SizedBox(height: 8.0),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     ElevatedButton(
+            //       onPressed: onActivate,
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: Colors.green,
+            //       ),
+            //       child: const Text('Activate',
+            //           style: TextStyle(color: Colors.white)),
+            //     ),
+            //     const SizedBox(width: 8.0),
+            //     ElevatedButton(
+            //       onPressed: onDeactivate,
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: Colors.red,
+            //       ),
+            //       child: const Text('Deactivate',
+            //           style: TextStyle(color: Colors.white)),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
