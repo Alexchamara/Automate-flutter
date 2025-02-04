@@ -27,8 +27,10 @@ class AdminController {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse is Map<String, dynamic> &&
-            jsonResponse.containsKey('data')) {
-          List<dynamic> listingsJson = jsonResponse['data'];
+            jsonResponse.containsKey('data') &&
+            jsonResponse['data'] is Map<String, dynamic> &&
+            jsonResponse['data'].containsKey('data')) {
+          List<dynamic> listingsJson = jsonResponse['data']['data'];
           return listingsJson.map((data) => Listing.fromJson(data)).toList();
         } else {
           throw Exception("Unexpected response format");

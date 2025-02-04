@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:automate/models/advert.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:automate/providers/authProvider.dart';
 import 'package:automate/models/user.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -51,9 +49,21 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
   // List to store uploaded images
   List<File> _uploadedImages = [];
 
+  /// This function picks an image from the gallery.
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _uploadedImages.add(File(image.path));
+      });
+    }
+  }
+
+  /// This function captures an image using the device's camera.
+  Future<void> _captureImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       setState(() {
         _uploadedImages.add(File(image.path));
@@ -67,68 +77,69 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
     });
   }
 
-void _submitForm() async {
-  if (_formKey.currentState!.validate()) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (!authProvider.authenticated()) {
-      Navigator.pushNamed(context, LoginPage.id);
-      return;
-    }
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (!authProvider.authenticated()) {
+        Navigator.pushNamed(context, LoginPage.id);
+        return;
+      }
 
-    final advert = Advert(
-      id: 0,
-      brand: _selectedBrand!,
-      model: _selectedModel!,
-      year: _selectedYear!,
-      mileage: int.parse(_mileageController.text),
-      condition: _selectedCondition!,
-      color: _selectedColor!,
-      engine: _selectedEngine!,
-      bodyType: _selectedBodyType!,
-      gearBox: _selectedGearBox!,
-      fuelType: _selectedFuelType!,
-      price: double.parse(_priceController.text),
-      description: _descriptionController.text,
-      phone: _phoneController.text,
-      email: _emailController.text,
-      location: _locationController.text,
-      images: _uploadedImages.map((file) => file.path).toList(),
-    );
-
-    try {
-      final response = await ListingController.createListing(context, advert);
-      final listingId = response['data']['id'];
-      print("Listing ID: $listingId");
-
-      final listing = Listing(
-        id: listingId,
-        userId: authProvider.getUser().id,
-        advertId: advert.id,
-        status: 'pending',
-        statusUpdatedAt: DateTime.now(),
-        isActive: true,
-        paymentStatus: 'unpaid',
-        user: authProvider.getUser(),
-        advert: advert,
+      final advert = Advert(
+        id: 0,
+        brand: _selectedBrand!,
+        model: _selectedModel!,
+        year: _selectedYear!,
+        mileage: int.parse(_mileageController.text),
+        condition: _selectedCondition!,
+        color: _selectedColor!,
+        engine: _selectedEngine!,
+        bodyType: _selectedBodyType!,
+        gearBox: _selectedGearBox!,
+        fuelType: _selectedFuelType!,
+        price: double.parse(_priceController.text),
+        description: _descriptionController.text,
+        phone: _phoneController.text,
+        email: _emailController.text,
+        location: _locationController.text,
+        images: _uploadedImages.map((file) => file.path).toList(),
       );
 
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => PricingScreen(listingId: listingId.toString()),
-      //   ),
-      // );
-    } catch (e) {
+      try {
+        final response = await ListingController.createListing(context, advert);
+        final listingId = response['data']['id'];
+        print("Listing ID: $listingId");
+
+        final listing = Listing(
+          id: listingId,
+          userId: authProvider.getUser().id,
+          advertId: advert.id,
+          status: 'pending',
+          statusUpdatedAt: DateTime.now(),
+          isActive: true,
+          paymentStatus: 'unpaid',
+          user: authProvider.getUser(),
+          advert: advert,
+        );
+
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => PricingScreen(listingId: listingId.toString()),
+        //   ),
+        // );
+      } catch (e) {
+        setState(() {
+          _validationMessage = 'Failed to create listing: ${e.toString()}';
+        });
+      }
+    } else {
       setState(() {
-        _validationMessage = 'Failed to create listing: ${e.toString()}';
+        _validationMessage = 'Please fill out all required fields.';
       });
     }
-  } else {
-    setState(() {
-      _validationMessage = 'Please fill out all required fields.';
-    });
   }
-}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,23 +205,23 @@ void _submitForm() async {
                       children: [
                         _buildDropdown('Vehicle Brand', _selectedBrand,
                             ['Brand A', 'Brand B'], (value) {
-                          setState(() {
-                            _selectedBrand = value;
-                          });
-                        }),
+                              setState(() {
+                                _selectedBrand = value;
+                              });
+                            }),
                         _buildDropdown(
                             'Model', _selectedModel, ['Model X', 'Model Y'],
-                            (value) {
-                          setState(() {
-                            _selectedModel = value;
-                          });
-                        }),
+                                (value) {
+                              setState(() {
+                                _selectedModel = value;
+                              });
+                            }),
                         _buildDropdown('Year of Registration', _selectedYear,
                             ['2020', '2021'], (value) {
-                          setState(() {
-                            _selectedYear = value;
-                          });
-                        }),
+                              setState(() {
+                                _selectedYear = value;
+                              });
+                            }),
                         TextFormField(
                           controller: _mileageController,
                           decoration: const InputDecoration(
@@ -224,43 +235,43 @@ void _submitForm() async {
                         ),
                         _buildDropdown(
                             'Condition', _selectedCondition, ['New', 'Used'],
-                            (value) {
-                          setState(() {
-                            _selectedCondition = value;
-                          });
-                        }),
+                                (value) {
+                              setState(() {
+                                _selectedCondition = value;
+                              });
+                            }),
                         _buildDropdown(
                             'Engine', _selectedEngine, ['1.4L', '2.0L'],
-                            (value) {
-                          setState(() {
-                            _selectedEngine = value;
-                          });
-                        }),
+                                (value) {
+                              setState(() {
+                                _selectedEngine = value;
+                              });
+                            }),
                         _buildDropdown('Color', _selectedColor, ['Red', 'Blue'],
-                            (value) {
-                          setState(() {
-                            _selectedColor = value;
-                          });
-                        }),
+                                (value) {
+                              setState(() {
+                                _selectedColor = value;
+                              });
+                            }),
                         _buildDropdown(
                             'Body Type', _selectedBodyType, ['Sedan', 'SUV'],
-                            (value) {
-                          setState(() {
-                            _selectedBodyType = value;
-                          });
-                        }),
+                                (value) {
+                              setState(() {
+                                _selectedBodyType = value;
+                              });
+                            }),
                         _buildDropdown('Gear Box', _selectedGearBox,
                             ['Automatic', 'Manual'], (value) {
-                          setState(() {
-                            _selectedGearBox = value;
-                          });
-                        }),
+                              setState(() {
+                                _selectedGearBox = value;
+                              });
+                            }),
                         _buildDropdown('Fuel Type', _selectedFuelType,
                             ['Petrol', 'Diesel'], (value) {
-                          setState(() {
-                            _selectedFuelType = value;
-                          });
-                        }),
+                              setState(() {
+                                _selectedFuelType = value;
+                              });
+                            }),
                       ],
                     ),
                     isActive: _currentStep >= 0,
@@ -272,9 +283,19 @@ void _submitForm() async {
                     title: Text("Step 2: Contact Details"),
                     content: Column(
                       children: [
-                        ElevatedButton(
-                          onPressed: _pickImage,
-                          child: const Text('Upload Images'),
+                        // Added two buttons to allow the user to either pick an image from the gallery or capture one using the camera.
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: _pickImage,
+                              child: const Text('Upload from Gallery'),
+                            ),
+                            ElevatedButton(
+                              onPressed: _captureImage,
+                              child: const Text('Capture Image'),
+                            ),
+                          ],
                         ),
                         Wrap(
                           children: _uploadedImages.map((image) {
@@ -308,7 +329,7 @@ void _submitForm() async {
                         TextFormField(
                           controller: _descriptionController,
                           decoration:
-                              const InputDecoration(labelText: 'Description'),
+                          const InputDecoration(labelText: 'Description'),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter the description';
@@ -319,7 +340,7 @@ void _submitForm() async {
                         TextFormField(
                           controller: _phoneController,
                           decoration:
-                              const InputDecoration(labelText: 'Phone Number'),
+                          const InputDecoration(labelText: 'Phone Number'),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter the phone number';
@@ -340,7 +361,7 @@ void _submitForm() async {
                         TextFormField(
                           controller: _locationController,
                           decoration:
-                              const InputDecoration(labelText: 'Location'),
+                          const InputDecoration(labelText: 'Location'),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter the location';
@@ -366,7 +387,6 @@ void _submitForm() async {
                 ],
               ),
               const SizedBox(height: 20.0),
-
               // Submit Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -381,8 +401,8 @@ void _submitForm() async {
                   child: Text(
                     'Submit',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
-                        ),
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
