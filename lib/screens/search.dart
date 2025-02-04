@@ -51,6 +51,39 @@ class SearchPagePortrait extends StatefulWidget {
 }
 
 class _SearchPagePortraitState extends State<SearchPagePortrait> {
+  List<Listing> _allListings = [];
+  List<Listing> _filteredListings = [];
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.listings.then((listings) {
+      setState(() {
+        _allListings = listings;
+        _filteredListings = _allListings;
+      });
+    });
+  }
+
+  void _searchListings(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        _filteredListings = _allListings;
+      } else {
+        _filteredListings = _allListings.where((listing) {
+          return listing.advert.model
+              .toLowerCase()
+              .contains(query.toLowerCase()) ||
+              listing.advert.location
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              listing.advert.brand.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,42 +91,61 @@ class _SearchPagePortraitState extends State<SearchPagePortrait> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            //Search Bar
-            ProductSearchBar(),
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: TextField(
+                controller: _searchController,
+                onChanged: _searchListings,
+                decoration: InputDecoration(
+                  labelText: 'Search by model, brand, or location',
+                  prefixIcon: Icon(Icons.search, color: Colors.blue),
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                    icon: Icon(Icons.clear, color: Colors.red),
+                    onPressed: () {
+                      _searchController.clear();
+                      _searchListings('');
+                    },
+                  )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
 
-            FutureBuilder<List<Listing>>(
-              future: widget.listings,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No listings found'));
-                } else {
-                  return SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: snapshot.data!.map((listing) {
-                        //Product slider
-                        ImageSlider(height: 280.0, fitSize: StackFit.loose);
+            // Display products or no results message
+            _filteredListings.isEmpty
+                ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  'No listings found!',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ),
+            )
+                : ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _filteredListings.length,
+              itemBuilder: (context, index) {
+                final listing = _filteredListings[index];
 
-                        return ProductCard(
-                          carImage: listing.advert.images.isNotEmpty
-                              ? listing.advert.images.first
-                              : 'images/default.jpg.webp',
-                          carTitle: listing.advert.model,
-                          carPrice: 'Rs. ${listing.advert.price}',
-                          carLocation: listing.advert.location,
-                          carCondition: listing.advert.condition,
-                          carMileage: '${listing.advert.mileage} km',
-                          carFuelType: listing.advert.fuelType,
-                          listing: listing,
-                        );
-                      }).toList(),
-                    ),
-                  );
-                }
+                return ProductCard(
+                  carImage: listing.advert.images.isNotEmpty
+                      ? listing.advert.images.first
+                      : 'images/default.jpg.webp',
+                  carTitle: listing.advert.model,
+                  carPrice: 'Rs. ${listing.advert.price}',
+                  carLocation: listing.advert.location,
+                  carCondition: listing.advert.condition,
+                  carMileage: '${listing.advert.mileage} km',
+                  carFuelType: listing.advert.fuelType,
+                  listing: listing,
+                );
               },
             ),
           ],
