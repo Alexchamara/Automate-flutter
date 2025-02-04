@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:automate/models/advert.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -7,6 +8,7 @@ import 'package:automate/providers/authProvider.dart';
 import 'package:automate/models/user.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:geolocator/geolocator.dart';
 
 import '../controllers/listing_controller.dart';
 import '../models/advert.dart';
@@ -49,7 +51,7 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
   // List to store uploaded images
   List<File> _uploadedImages = [];
 
-  /// This function picks an image from the gallery.
+  /// Picks an image from the gallery.
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -60,7 +62,7 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
     }
   }
 
-  /// This function captures an image using the device's camera.
+  /// Captures an image using the device's camera.
   Future<void> _captureImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
@@ -68,6 +70,72 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
       setState(() {
         _uploadedImages.add(File(image.path));
       });
+    }
+  }
+
+  /// Retrieves the current location and updates the location text field.
+  Future<void> _getCurrentLocation() async {
+    // Check if location services are enabled.
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable them in your device settings.'),
+        ),
+      );
+      return;
+    }
+
+    // Check for location permissions.
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Location permissions are denied')),
+        );
+        return;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Location permissions are permanently denied, cannot request permissions.')),
+      );
+      return;
+    }
+
+    try {
+      // Retrieve the current position.
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Perform reverse geocoding to get a human-readable address.
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        // You can customize the address format as needed.
+        String address = '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+        setState(() {
+          _locationController.text = address;
+        });
+      } else {
+        setState(() {
+          _locationController.text = 'Address not found';
+        });
+      }
+    } catch (e) {
+      // Handle any errors from reverse geocoding.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error getting address: ${e.toString()}')),
+      );
     }
   }
 
@@ -283,7 +351,7 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
                     title: Text("Step 2: Contact Details"),
                     content: Column(
                       children: [
-                        // Added two buttons to allow the user to either pick an image from the gallery or capture one using the camera.
+                        // Two buttons for uploading images from gallery or capturing a new image.
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -358,16 +426,21 @@ class _CreateAdvertFormState extends State<CreateAdvertForm> {
                             return null;
                           },
                         ),
+                        // Location text field and button to auto-fill current location.
                         TextFormField(
                           controller: _locationController,
                           decoration:
                           const InputDecoration(labelText: 'Location'),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter the location';
+                              return 'Please enter the location or use current location';
                             }
                             return null;
                           },
+                        ),
+                        ElevatedButton(
+                          onPressed: _getCurrentLocation,
+                          child: const Text('Get Current Location'),
                         ),
                         if (_validationMessage != null)
                           Padding(
