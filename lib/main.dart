@@ -1,3 +1,6 @@
+import 'package:automate/models/advert.dart';
+import 'package:automate/models/listing.dart';
+import 'package:automate/models/user.dart';
 import 'package:automate/routes/routeGuard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -86,12 +89,44 @@ class _AutomateAppState extends State<AutomateApp> {
             Layout.id: (context) => Layout(toggleTheme: _toggleTheme),
             RegisterPage.id: (context) => const RegisterPage(),
             LoginPage.id: (context) => const LoginPage(),
-            ProductDetailPage.id: (context) => const ProductDetailPage(),
+            ProductDetailPage.id: (context) => ProductDetailPage(
+                    listing: Listing(
+                  id: 0,
+                  userId: 0,
+                  advertId: 0,
+                  status: '',
+                  statusUpdatedAt: DateTime.now(),
+                  isActive: false,
+                  paymentStatus: '',
+                  user: User(id: 0, name: '', email: '', mobile: ''),
+                  advert: Advert(
+                    id: 0,
+                    brand: '',
+                    model: '',
+                    year: '',
+                    mileage: 0,
+                    condition: '',
+                    engine: '',
+                    color: '',
+                    bodyType: '',
+                    gearBox: '',
+                    fuelType: '',
+                    price: 0.0,
+                    description: '',
+                    phone: '',
+                    email: '',
+                    location: '',
+                    images: [],
+                  ),
+                )),
             SearchPage.id: (context) => const SearchPage(),
             CreateAds.id: (context) => const CreateAds(),
-            UserDashoard.id: (context) => RouteGuard(child: const UserDashoard()),
-            AdminDashboard.id: (context) => RouteGuard(child: const AdminDashboard()),
-            CreateAdvertForm.id: (context) => RouteGuard(child: const CreateAdvertForm()),
+            UserDashoard.id: (context) =>
+                RouteGuard(child: const UserDashoard()),
+            AdminDashboard.id: (context) =>
+                RouteGuard(child: const AdminDashboard()),
+            CreateAdvertForm.id: (context) =>
+                RouteGuard(child: const CreateAdvertForm()),
             'myAds': (context) => MyAdsPage(),
             'favourites': (context) => FavouritesPage(),
             'myMessages': (context) => MyMessagesPage(),

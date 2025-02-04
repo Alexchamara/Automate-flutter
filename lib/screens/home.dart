@@ -482,12 +482,12 @@ class _CarouselSliderAdsState extends State<CarouselSliderAds> {
                 },
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProductDetailPage(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const ProductDetailPage(),
+                    //   ),
+                    // );
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),

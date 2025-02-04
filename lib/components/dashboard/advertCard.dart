@@ -1,3 +1,4 @@
+import 'package:automate/network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:automate/models/listing.dart';
 import '../../controllers/listing_controller.dart';
@@ -57,8 +58,15 @@ class _AdvertCardState extends State<AdvertCard>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset('images/default.jpg.webp',
-                  fit: BoxFit.cover, width: double.infinity, height: 200),
+              NetworkImageWidget(
+                imageUrl: widget.advert.images.isNotEmpty
+                    ? widget.advert.images.first
+                    : 'images/default.jpg.webp',
+                width: double.infinity,
+                height: 200,
+              ),
+              // Image.asset('images/default.jpg.webp',
+              //     fit: BoxFit.cover, width: double.infinity, height: 200),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(

@@ -1,22 +1,38 @@
+import 'package:automate/controllers/listing_controller.dart';
+import 'package:automate/models/listing.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:automate/screens/product_detail.dart';
 import 'package:flutter/material.dart';
 
 // SearchPage
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
   static final String id = 'SearchPage';
+
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  late Future<List<Listing>> _listings;
+
+  @override
+  void initState() {
+    super.initState();
+    _listings = ListingController.getAllListings();
+  }
 
   @override
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (context, orientation) {
         if (orientation == Orientation.portrait) {
-          return const SearchPagePortrait();
+          return SearchPagePortrait(listings: _listings);
         } else {
           return SearchPageLandscape(
             height: MediaQuery.of(context).size.width * 0.35,
+            listings: _listings,
           );
         }
       },
@@ -25,12 +41,19 @@ class SearchPage extends StatelessWidget {
 }
 
 // SearchPagePortrait
-class SearchPagePortrait extends StatelessWidget {
-  const SearchPagePortrait({super.key});
+class SearchPagePortrait extends StatefulWidget {
+  final Future<List<Listing>> listings;
+
+  const SearchPagePortrait({super.key, required this.listings});
 
   @override
+  State<SearchPagePortrait> createState() => _SearchPagePortraitState();
+}
+
+class _SearchPagePortraitState extends State<SearchPagePortrait> {
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,51 +61,40 @@ class SearchPagePortrait extends StatelessWidget {
             //Search Bar
             ProductSearchBar(),
 
-            //Product slider
-            ImageSlider(height: 280.0, fitSize: StackFit.loose),
+            FutureBuilder<List<Listing>>(
+              future: widget.listings,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No listings found'));
+                } else {
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: snapshot.data!.map((listing) {
+                        //Product slider
+                        ImageSlider(height: 280.0, fitSize: StackFit.loose);
 
-            //Product 01
-            ProductCard(
-              carImage: 'images/cars/benz.jpg',
-              carTitle: 'Mercedes-Benz A Class',
-              carPrice: 'Rs. 26,000,000',
-              carLocation: 'Colombo',
-              carCondition: 'Used',
-              carMileage: '87,000 km',
-              carFuelType: 'Petrol',
-            ),
-
-            //Product 02
-            ProductCard(
-              carImage: 'images/cars/bmw.jpg',
-              carTitle: 'BMW 320i 2019',
-              carPrice: 'Rs. 2,200,000',
-              carLocation: 'Colombo',
-              carCondition: 'Used',
-              carMileage: '15,000 km',
-              carFuelType: 'Petrol',
-            ),
-
-            //Product 03
-            ProductCard(
-              carImage: 'images/cars/corolla.jpg',
-              carTitle: 'Toyota Corolla 2019',
-              carPrice: 'Rs. 1,795,000',
-              carLocation: 'Colombo',
-              carCondition: 'Used',
-              carMileage: '20,000 km',
-              carFuelType: 'Petrol',
-            ),
-
-            //Product 04
-            ProductCard(
-              carImage: 'images/cars/audi.jpeg',
-              carTitle: 'Audi A4 2020',
-              carPrice: 'Rs. 2,500,000',
-              carLocation: 'Colombo',
-              carCondition: 'Used',
-              carMileage: '10,000 km',
-              carFuelType: 'Petrol',
+                        return ProductCard(
+                          carImage: listing.advert.images.isNotEmpty
+                              ? listing.advert.images.first
+                              : 'images/default.jpg.webp',
+                          carTitle: listing.advert.model,
+                          carPrice: 'Rs. ${listing.advert.price}',
+                          carLocation: listing.advert.location,
+                          carCondition: listing.advert.condition,
+                          carMileage: '${listing.advert.mileage} km',
+                          carFuelType: listing.advert.fuelType,
+                          listing: listing,
+                        );
+                      }).toList(),
+                    ),
+                  );
+                }
+              },
             ),
           ],
         ),
@@ -92,75 +104,79 @@ class SearchPagePortrait extends StatelessWidget {
 }
 
 // SearchPageLandscape
-class SearchPageLandscape extends StatelessWidget {
+class SearchPageLandscape extends StatefulWidget {
+  final Future<List<Listing>> listings;
   final double height;
 
-  const SearchPageLandscape({super.key, required this.height});
+  const SearchPageLandscape(
+      {super.key, required this.height, required this.listings});
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-
-          //Product slider
-          ImageSlider(height: height, fitSize: StackFit.expand),
-
-          // Search Bar
-          const ProductSearchBar(),
-
-          // Product Grid
-          GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            childAspectRatio: 1.15,
-            physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              ProductCard(
-                carImage: 'images/cars/audi.jpeg',
-                carTitle: 'Audi A4 2020',
-                carPrice: 'Rs. 2,500,000',
-                carLocation: 'Colombo',
-                carCondition: 'Used',
-                carMileage: '10,000 km',
-                carFuelType: 'Petrol',
-              ),
-              ProductCard(
-                carImage: 'images/cars/bmw.jpg',
-                carTitle: 'BMW 320i 2019',
-                carPrice: 'Rs. 2,200,000',
-                carLocation: 'Colombo',
-                carCondition: 'Used',
-                carMileage: '15,000 km',
-                carFuelType: 'Petrol',
-              ),
-              ProductCard(
-                carImage: 'images/cars/corolla.jpg',
-                carTitle: 'Toyota Corolla 2019',
-                carPrice: 'Rs. 1,795,000',
-                carLocation: 'Colombo',
-                carCondition: 'Used',
-                carMileage: '20,000 km',
-                carFuelType: 'Petrol',
-              ),
-              ProductCard(
-                carImage: 'images/cars/benz.jpg',
-                carTitle: 'Mercedes-Benz A Class',
-                carPrice: 'Rs. 26,000,000',
-                carLocation: 'Colombo',
-                carCondition: 'Used',
-                carMileage: '87,000 km',
-                carFuelType: 'Petrol',
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
+  @override
+  State<SearchPageLandscape> createState() => _SearchPageLandscapeState();
 }
+
+class _SearchPageLandscapeState extends State<SearchPageLandscape> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Search Bar
+            const ProductSearchBar(),
+
+            // Product Grid
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              childAspectRatio: 1.15,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                FutureBuilder<List<Listing>>(
+                  future: widget.listings,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No listings found'));
+                    } else {
+                      return SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: snapshot.data!.map((listing) {
+                            //Product slider
+                            ImageSlider(
+                                height: widget.height,
+                                fitSize: StackFit.expand);
+
+                            return ProductCard(
+                              carImage: listing.advert.images.isNotEmpty
+                                  ? listing.advert.images.first
+                                  : 'images/default.jpg.webp',
+                              carTitle: listing.advert.model,
+                              carPrice: 'Rs. ${listing.advert.price}',
+                              carLocation: listing.advert.location,
+                              carCondition: listing.advert.condition,
+                              carMileage: '${listing.advert.mileage} km',
+                              carFuelType: listing.advert.fuelType,
+                              listing: listing,
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // Prefetch image slider
@@ -212,11 +228,11 @@ class _ImageSliderState extends State<ImageSlider> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProductDetailPage()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => const ProductDetailPage()),
+                  // );
                 },
                 child: CarouselSlider.builder(
                   itemCount: imageList.length,
@@ -311,96 +327,190 @@ class ProductSearchBar extends StatefulWidget {
 }
 
 class _ProductSearchBarState extends State<ProductSearchBar> {
+  bool _showLocationInputField = false;
+  bool _showModelInputField = false;
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _makeController = TextEditingController();
+  List<Listing> _filteredListings = [];
+
+  void _searchListings() async {
+    final allListings = await ListingController.getAllListings();
+    setState(() {
+      _filteredListings = allListings.where((listing) {
+        final locationMatch = listing.advert.location
+            .toLowerCase()
+            .contains(_locationController.text.toLowerCase());
+        final modelMatch = listing.advert.brand
+            .toLowerCase()
+            .contains(_makeController.text.toLowerCase());
+        return locationMatch && modelMatch;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        // Location
-        Expanded(
-          flex: 2,
-          child: Container(
-            height: 50,
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.withOpacity(0.5)),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    blurRadius: 5,
-                    offset: const Offset(0, 3)),
-              ],
-            ),
-            child: MaterialButton(
-              onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.location_on,
-                      color: Theme.of(context).primaryColor),
-                  const SizedBox(width: 2),
-                  Text('Location',
-                      style: Theme.of(context).textTheme.bodyLarge),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-        // Category button
-        Expanded(
-          flex: 2,
-          child: Container(
-            height: 50,
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.withOpacity(0.5)),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    blurRadius: 5,
-                    offset: const Offset(0, 3)),
-              ],
-            ),
-            child: MaterialButton(
-              onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Transform.rotate(
-                    angle: 1.3,
-                    child: Icon(
-                      Icons.local_offer,
-                      color: Theme.of(context).primaryColor,
-                    ),
+        Row(
+          children: [
+            // Location
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 50,
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 5,
+                        offset: const Offset(0, 3)),
+                  ],
+                ),
+                child: MaterialButton(
+                  onPressed: () {
+                    setState(() {
+                      _showLocationInputField = !_showLocationInputField;
+                      _showModelInputField = false;
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.location_on,
+                          color: Theme.of(context).primaryColor),
+                      const SizedBox(width: 2),
+                      Text('Location',
+                          style: Theme.of(context).textTheme.bodyLarge),
+                    ],
                   ),
-                  const SizedBox(width: 2),
-                  Text('Model', style: Theme.of(context).textTheme.bodyLarge),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
 
-        // Saved Ads
-        Expanded(
-          flex: 1,
-          child: Container(
-            height: 50,
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-            child: MaterialButton(
-              onPressed: () {},
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(color: Colors.grey.withOpacity(0.5)),
+            // Model button
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 50,
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 5,
+                        offset: const Offset(0, 3)),
+                  ],
+                ),
+                child: MaterialButton(
+                  onPressed: () {
+                    setState(() {
+                      _showModelInputField = !_showModelInputField;
+                      _showLocationInputField = false;
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.rotate(
+                        angle: 1.3,
+                        child: Icon(
+                          Icons.local_offer,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      Text('Brand', style: Theme.of(context).textTheme.bodyLarge),
+                    ],
+                  ),
+                ),
               ),
-              child: const Icon(Icons.bookmark_add_outlined, color: Colors.red),
+            ),
+
+            // Search button
+            Expanded(
+              flex: 1,
+              child: Container(
+                height: 50,
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                child: MaterialButton(
+                  onPressed: _searchListings,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                  ),
+                  child: const Icon(Icons.search, color: Colors.blue),
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (_showLocationInputField)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: TextField(
+              controller: _locationController,
+              decoration: InputDecoration(
+                labelText: 'Enter location',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    _locationController.clear();
+                  },
+                ),
+              ),
             ),
           ),
-        ),
+        if (_showModelInputField)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: TextField(
+              controller: _makeController,
+              decoration: InputDecoration(
+                labelText: 'Enter brand name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    _makeController.clear();
+                  },
+                ),
+              ),
+            ),
+          ),
+        // Display filtered results
+        if (_filteredListings.isNotEmpty)
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: _filteredListings.length,
+            itemBuilder: (context, index) {
+              final listing = _filteredListings[index];
+              return ProductCard(
+                carImage: listing.advert.images.isNotEmpty
+                    ? listing.advert.images.first
+                    : 'images/default.jpg.webp',
+                carTitle: listing.advert.brand,
+                carPrice: 'Price: Rs.${listing.advert.price}',
+                carLocation: listing.advert.location,
+                carCondition: listing.advert.condition,
+                carMileage: '${listing.advert.mileage} km',
+                carFuelType: listing.advert.fuelType,
+                listing: listing,
+              );
+            },
+          ),
       ],
     );
   }
@@ -415,16 +525,19 @@ class ProductCard extends StatelessWidget {
   final carCondition;
   final carMileage;
   final carFuelType;
+  final Listing listing;
 
-  const ProductCard(
-      {super.key,
-        this.carImage,
-        this.carFuelType,
-        this.carTitle,
-        this.carPrice,
-        this.carLocation,
-        this.carCondition,
-        this.carMileage});
+  const ProductCard({
+    super.key,
+    this.carImage,
+    this.carFuelType,
+    this.carTitle,
+    this.carPrice,
+    this.carLocation,
+    this.carCondition,
+    this.carMileage,
+    required this.listing,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +545,8 @@ class ProductCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const ProductDetailPage()),
+          MaterialPageRoute(
+              builder: (context) => ProductDetailPage(listing: listing)),
         );
       },
       child: Container(
@@ -445,7 +559,6 @@ class ProductCard extends StatelessWidget {
             // height: 300,
             child: Column(
               children: [
-
                 // Car Image
                 Center(
                   child: ClipRRect(
@@ -464,17 +577,16 @@ class ProductCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // Title
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 5.0, horizontal: 10.0),
                       child: Text(carTitle,
                           style:
-                          Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18.0,
-                          )),
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18.0,
+                                  )),
                     ),
 
                     // Price
@@ -515,9 +627,7 @@ class ProductCard extends StatelessWidget {
                                     color: Colors.grey,
                                   )),
                               const SizedBox(width: 30),
-
-                              const Icon(Icons.location_on,
-                                  color: Colors.grey),
+                              const Icon(Icons.location_on, color: Colors.grey),
                               Text(carLocation,
                                   style: const TextStyle(
                                     fontSize: 14.0,

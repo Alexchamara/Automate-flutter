@@ -78,13 +78,13 @@ class AdminDashboard extends StatelessWidget {
                       Navigator.pushNamed(context, 'manageUsers');
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.admin_panel_settings),
-                    title: const Text('Admin'),
-                    onTap: () {
-                      Navigator.pushNamed(context, 'addAdmin');
-                    },
-                  ),
+                  // ListTile(
+                  //   leading: const Icon(Icons.admin_panel_settings),
+                  //   title: const Text('Admin'),
+                  //   onTap: () {
+                  //     Navigator.pushNamed(context, 'addAdmin');
+                  //   },
+                  // ),
                   ListTile(
                     leading: const Icon(Icons.person),
                     title: const Text('Personal Details'),

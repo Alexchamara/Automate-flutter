@@ -1,3 +1,4 @@
+import 'package:automate/models/listing.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -6,7 +7,9 @@ import 'account.dart';
 
 //ProductDetailPage
 class ProductDetailPage extends StatelessWidget {
-  const ProductDetailPage({super.key});
+  final Listing listing;
+
+  const ProductDetailPage({super.key, required this.listing});
 
   static final String id = 'ProductDetailPage';
 
@@ -46,8 +49,8 @@ class ProductDetailPage extends StatelessWidget {
 
             // Body
             body: orientation == Orientation.portrait
-                ? const ProductPortrait()
-                : const ProductLandscape(),
+                ? ProductPortrait(listing: listing)
+                : ProductLandscape(listing: listing),
           ),
         );
       },
@@ -57,18 +60,20 @@ class ProductDetailPage extends StatelessWidget {
 
 //ProductPortrait widget
 class ProductPortrait extends StatelessWidget {
-  const ProductPortrait({super.key});
+  final Listing listing;
+
+  const ProductPortrait({super.key, required this.listing});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            ImageSlider(height: 275, fitSize: StackFit.expand),
-            SizedBox(height: 20),
-            ProductDetails(),
+            const ImageSlider(height: 275, fitSize: StackFit.expand),
+            const SizedBox(height: 20),
+            ProductDetails(listing: listing),
             // Bottom Navigation Bar
           ],
         ),
@@ -117,18 +122,20 @@ class ProductPortrait extends StatelessWidget {
 
 //ProductLandscape widget
 class ProductLandscape extends StatelessWidget {
-  const ProductLandscape({super.key});
+  final Listing listing;
+
+  const ProductLandscape({super.key, required this.listing});
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ImageSlider(height: 300, fitSize: StackFit.expand),
-            SizedBox(height: 20),
-            ProductDetails(),
+            const ImageSlider(height: 300, fitSize: StackFit.expand),
+            const SizedBox(height: 20),
+            ProductDetails(listing: listing),
           ],
         ),
       ),
@@ -176,11 +183,11 @@ class _ImageSliderState extends State<ImageSlider> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ProductDetailPage()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => const ProductDetailPage()),
+                      // );
                     },
                     child: CarouselSlider.builder(
                       itemCount: imageList.length,
@@ -221,7 +228,9 @@ class _ImageSliderState extends State<ImageSlider> {
 
 //ProductDetails widget
 class ProductDetails extends StatelessWidget {
-  const ProductDetails({super.key});
+  final Listing listing;
+
+  const ProductDetails({super.key, required this.listing});
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +241,7 @@ class ProductDetails extends StatelessWidget {
         children: [
           // Product Name Section
           Text(
-            'Mercedes-Benz A Class',
+            listing.advert.model,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 24.0,
@@ -242,9 +251,9 @@ class ProductDetails extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Product Price
-          const Text(
-            'Rs. 26,000,000',
-            style: TextStyle(
+          Text(
+            listing.advert.price.toString(),
+            style: const TextStyle(
               color: Colors.red,
               fontSize: 22.0,
               fontWeight: FontWeight.bold,
@@ -253,23 +262,18 @@ class ProductDetails extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Product Features
-          _sectionTitleWithIcon(context, 'Car Features', Icons.star),
-          Text(
-            '�� Air Conditioning\n• Airbags\n• Alarm System\n• Alloy Wheels\n• Bluetooth Interface\n• CD/DVD Autochanger\n• Cruise Control\n• Direct Fuel Injection\n• Electric Parking Brake\n• Wind Deflector',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14.0,
-                  height: 1.5,
-                ),
-          ),
-          const SizedBox(height: 20),
-
           // Product Specifications
           _sectionTitleWithIcon(
               context, 'Product Specifications', Icons.rate_review),
           Text(
-            '• Condition: Used\n• Fuel: Petrol\n• Engine: 1.4L\n• Transmission: Automatic\n• Year: 2020\n• Mileage: 10,000 km',
+            '• Condition: ${listing.advert.condition}'
+                '\n• Fuel: ${listing.advert.fuelType}'
+                '\n• Engine: ${listing.advert.engine}'
+                '\n• Transmission: ${listing.advert.gearBox}'
+                '\n• Year: ${listing.advert.year}'
+                '\n• Mileage: ${listing.advert.mileage} km'
+                '\n• Color: ${listing.advert.color}'
+                '\n• Body Type: ${listing.advert.bodyType}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -281,13 +285,27 @@ class ProductDetails extends StatelessWidget {
           // Product Description
           _sectionTitleWithIcon(context, 'Description', Icons.description),
           Text(
-            'The CEO of an internationally recognised company drives a Mercedes Benz A180 2020 registered car.',
+            listing.advert.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
                   height: 1.5,
                 ),
             textAlign: TextAlign.justify,
+          ),
+          const SizedBox(height: 20),
+
+          // Seller Features
+          _sectionTitleWithIcon(context, 'Seller Information', Icons.star),
+          Text(
+            '• Seller: ${listing.user.name}'
+                '\n• Email: ${listing.user.email}'
+                '\n• Phone: ${listing.user.mobile}',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+              height: 1.5,
+                ),
           ),
           const SizedBox(height: 20),
         ],

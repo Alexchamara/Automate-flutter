@@ -144,6 +144,41 @@ class ListingController {
       print("Exception: $e");
     }
   }
+
+  // Fetch all listings
+  static Future<List<Listing>> getAllListings() async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/listings');
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey('data') &&
+            jsonResponse['data'] is Map<String, dynamic> &&
+            jsonResponse['data'].containsKey('data')) {
+          List<dynamic> listingsJson = jsonResponse['data']['data'];
+          return listingsJson.map((data) => Listing.fromJson(data)).toList();
+        } else {
+          throw Exception("Unexpected response format");
+        }
+      } else {
+        throw Exception('Failed to load listings');
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return [];
+    }
+  }
 }
 
 // class ListingController {

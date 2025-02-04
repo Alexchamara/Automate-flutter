@@ -63,16 +63,13 @@ class Advert {
       phone: json['contactNumber'] ?? '',
       email: json['advertEmail'] ?? '',
       location: json['location'] ?? '',
-      // images: (json['advert']?['images'] != null)
-      //     ? (jsonDecode(json['advert']?['images']) as List<dynamic>)
-      //         .map((image) => image.toString())
-      //         .toList()
-      //     : [],
-      images: json['images'] != null
-          ? (jsonDecode(json['images']) as List<dynamic>)
-              .map((image) => image.toString())
-              .toList()
-          : [],
+
+      images: json['images'] is String
+          ? List<String>.from(jsonDecode(json['images']) as List<dynamic>)
+          .map((image) => 'http://10.0.2.2:8000/public/uploads/$image')
+          .toList()
+          : (json['images'] as List<dynamic>).map((image) => 'http://10.0.2.2:8000/public/uploads/$image').toList(),
+
       listing:
           json['listing'] != null ? Listing.fromJson(json['listing']) : null,
     );
