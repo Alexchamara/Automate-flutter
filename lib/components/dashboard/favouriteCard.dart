@@ -1,7 +1,12 @@
+import 'package:automate/controllers/listing_controller.dart';
+import 'package:automate/models/listing.dart';
+import 'package:automate/screens/product_detail.dart';
 import 'package:flutter/material.dart';
 
 class favouriteCard extends StatelessWidget {
-  const favouriteCard({super.key});
+  final Listing listing;
+
+  const favouriteCard({super.key, required this.listing});
 
   @override
   Widget build(BuildContext context) {
@@ -17,22 +22,29 @@ class favouriteCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('title', style: Theme.of(context).textTheme.titleLarge),
+                Text(listing.advert.brand, style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 5.0),
-                Text('Price: price',
+                Text('Price: Rs.${listing.advert.price}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 5.0),
-                Text('Location: location',
+                Text('Location: ${listing.advert.location}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 5.0),
-                Text('Status: status',
+                Text('Status: ${listing.isActive ? "Active" : "Inactive"}',
                     style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 10.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailPage(listing: listing),
+                          ),
+                        );
+                      },
                       child: const Text('View Advert'),
                     ),
                     ElevatedButton(
@@ -40,7 +52,11 @@ class favouriteCard extends StatelessWidget {
                         backgroundColor: Colors.red, // background color
                         foregroundColor: Colors.white, // text color
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        await ListingController.removeFromFavorites(listing.id);
+                        // Refresh the list after removing the favorite
+                        (context as Element).reassemble();
+                      },
                       child: const Text('Remove Favourite'),
                     ),
                   ],

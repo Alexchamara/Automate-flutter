@@ -179,6 +179,86 @@ class ListingController {
       return [];
     }
   }
+
+  //Add to favourites
+  static Future<void> addToFavorites(int listingId) async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/listings/$listingId/favorite');
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("Listing added to favorites successfully!");
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+  }
+
+  //Remove from favourites
+  static Future<void> removeFromFavorites(int listingId) async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/listings/$listingId/favorite');
+      final response = await http.delete(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("Listing removed from favorites successfully!");
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+  }
+
+  //retieve all favourites
+  static Future<List<Listing>> getFavoriteListings() async {
+    try {
+      final uri = Uri.parse('${Config.APP_URL}/api/saved-adverts');
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AuthService.instance.token}',
+        },
+      );
+
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey('data')) {
+          List<dynamic> listingsJson = jsonResponse['data'];
+          return listingsJson.map((data) => Listing.fromJson(data)).toList();
+        } else {
+          throw Exception("Unexpected response format");
+        }
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return [];
+    }
+  }
 }
 
 // class ListingController {

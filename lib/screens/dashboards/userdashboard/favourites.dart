@@ -1,7 +1,22 @@
+import 'package:automate/controllers/listing_controller.dart';
+import 'package:automate/models/listing.dart';
 import 'package:flutter/material.dart';
 import '../../../components/dashboard/favouriteCard.dart';
 
-class FavouritesPage extends StatelessWidget {
+class FavouritesPage extends StatefulWidget {
+  @override
+  _FavouritesPageState createState() => _FavouritesPageState();
+}
+
+class _FavouritesPageState extends State<FavouritesPage> {
+  late Future<List<Listing>> _favoriteListings;
+
+  @override
+  void initState() {
+    super.initState();
+    _favoriteListings = ListingController.getFavoriteListings();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,16 +34,28 @@ class FavouritesPage extends StatelessWidget {
           },
         ),
       ),
-      body: ListView(
-        children: [
-          favouriteCard(),
-          // Center(child: emptyFavourite()),
-        ],
+      body: FutureBuilder<List<Listing>>(
+        future: _favoriteListings,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: emptyFavourite());
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return favouriteCard(listing: snapshot.data![index]);
+              },
+            );
+          }
+        },
       ),
     );
   }
 }
-
 //create empty favourite card with description, large icon and button to search adverts
 Widget emptyFavourite() {
   return Card(

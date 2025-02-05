@@ -1,3 +1,4 @@
+import 'package:automate/controllers/listing_controller.dart';
 import 'package:automate/models/listing.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -6,7 +7,7 @@ import '../layout.dart';
 import 'account.dart';
 
 //ProductDetailPage
-class ProductDetailPage extends StatelessWidget {
+class ProductDetailPage extends StatefulWidget {
   final Listing listing;
 
   const ProductDetailPage({super.key, required this.listing});
@@ -14,12 +15,18 @@ class ProductDetailPage extends StatelessWidget {
   static final String id = 'ProductDetailPage';
 
   @override
+  _ProductDetailPageState createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  bool isFavorite = false;
+
+  @override
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (context, orientation) {
         return SafeArea(
           child: Scaffold(
-            // App Bar
             appBar: AppBar(
               title: const Text('Details',
                   style: TextStyle(
@@ -38,19 +45,26 @@ class ProductDetailPage extends StatelessWidget {
                     onPressed: () {},
                     icon: const Icon(Icons.share, color: Colors.white)),
                 IconButton(
-                  icon: const Icon(Icons.star_border_outlined),
-                  color: Colors.white,
-                  onPressed: () {
-                    // Navigator.pushNamed(context, SearchPage.id);
+                  icon: Icon(
+                    isFavorite ? Icons.star : Icons.star_border_outlined,
+                    color: Colors.white,
+                  ),
+                  onPressed: () async {
+                    if (isFavorite) {
+                      await ListingController.removeFromFavorites(widget.listing.id);
+                    } else {
+                      await ListingController.addToFavorites(widget.listing.id);
+                    }
+                    setState(() {
+                      isFavorite = !isFavorite;
+                    });
                   },
                 ),
               ],
             ),
-
-            // Body
             body: orientation == Orientation.portrait
-                ? ProductPortrait(listing: listing)
-                : ProductLandscape(listing: listing),
+                ? ProductPortrait(listing: widget.listing)
+                : ProductLandscape(listing: widget.listing),
           ),
         );
       },
@@ -240,12 +254,26 @@ class ProductDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Product Name Section
-          Text(
-            listing.advert.model,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 24.0,
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: listing.advert.brand,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24.0,
+                  ),
                 ),
+                const TextSpan(text: '  '),
+                TextSpan(
+                  text: listing.advert.model,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18.0,
+                  ),
+                ),
+              ],
+            ),
           ),
 
           const SizedBox(height: 10),
@@ -267,13 +295,13 @@ class ProductDetails extends StatelessWidget {
               context, 'Product Specifications', Icons.rate_review),
           Text(
             '• Condition: ${listing.advert.condition}'
-                '\n• Fuel: ${listing.advert.fuelType}'
-                '\n• Engine: ${listing.advert.engine}'
-                '\n• Transmission: ${listing.advert.gearBox}'
-                '\n• Year: ${listing.advert.year}'
-                '\n• Mileage: ${listing.advert.mileage} km'
-                '\n• Color: ${listing.advert.color}'
-                '\n• Body Type: ${listing.advert.bodyType}',
+            '\n• Fuel: ${listing.advert.fuelType}'
+            '\n• Engine: ${listing.advert.engine}'
+            '\n• Transmission: ${listing.advert.gearBox}'
+            '\n• Year: ${listing.advert.year}'
+            '\n• Mileage: ${listing.advert.mileage} km'
+            '\n• Color: ${listing.advert.color}'
+            '\n• Body Type: ${listing.advert.bodyType}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
@@ -299,12 +327,12 @@ class ProductDetails extends StatelessWidget {
           _sectionTitleWithIcon(context, 'Seller Information', Icons.star),
           Text(
             '• Seller: ${listing.user.name}'
-                '\n• Email: ${listing.user.email}'
-                '\n• Phone: ${listing.user.mobile}',
+            '\n• Email: ${listing.user.email}'
+            '\n• Phone: ${listing.user.mobile}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
-              height: 1.5,
+                  height: 1.5,
                 ),
           ),
           const SizedBox(height: 20),
